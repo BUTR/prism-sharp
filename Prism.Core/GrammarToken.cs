@@ -1,0 +1,37 @@
+﻿using System.Text.RegularExpressions;
+using System.Xml.Schema;
+
+namespace Prism.Core;
+
+/// <summary>
+/// The expansion of a simple `RegExp` literal to support additional properties.
+/// </summary>
+public class GrammarToken
+{
+    /// <summary>
+    /// The regular expression of the token.
+    /// </summary>
+    public Regex Pattern { get; private set; }
+    public bool Lookbehind { get; private set; }
+    public bool Greedy { get; private set; }
+    public string[] Alias { get; private set; }
+    public Grammar? Inside { get; private set; }
+
+
+    public GrammarToken(string pattern, bool lookbehind = false, bool greedy = false, string[]? alias = null, 
+        IReadOnlyDictionary<string, GrammarToken[]>? inside = null) 
+        : this(new Regex(pattern), lookbehind, greedy, alias, inside)
+    {
+    }
+    
+    public GrammarToken(Regex pattern, bool lookbehind = false, bool greedy = false, string[]? alias = null, 
+        IReadOnlyDictionary<string, GrammarToken[]>? inside = null)
+    {
+        Pattern = pattern;
+        Lookbehind = lookbehind;
+        Greedy = greedy;
+        Alias = alias ?? Array.Empty<string>();
+        Inside = inside == null ? null : new Grammar(inside);
+    }
+    
+}
