@@ -24,6 +24,15 @@ public static class Util
             .Replace("<", "&lt;")
             .Replace("\u00a0", " ");
     }
+
+    public static string Slice(string str, int startIndex, int? endIndex = null)
+    {
+        if (string.IsNullOrEmpty(str)) return string.Empty;
+        if (startIndex >= str.Length) return string.Empty;
+        return endIndex.HasValue 
+            ? str.Substring(startIndex, endIndex.Value - startIndex)
+            : str.Substring(startIndex);
+    }
     
     public static MyMatch MatchPattern(Regex pattern, int pos, string text, bool lookbehind) 
     {

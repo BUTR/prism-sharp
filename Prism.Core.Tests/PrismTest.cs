@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Xunit;
 
 namespace Prism.Core.Tests;
@@ -16,12 +18,73 @@ public class PrismTest
                 new(@"\/\*[\s\S]*?(?:\*\/|$)", greedy: true)
             }
         });
-        var tokens = Prism.Tokenize(@"// /*\n/* comment */", grammar);
-        var expected = new[]
+        TestCase(grammar, "// /*\n/* comment */",
+            new StringToken[]
+            {
+                new("// /*", "comment"),
+                // new("\n"),
+                new("/* comment */", "comment"),
+            });
+    }
+    
+    [Fact]
+    public void Tokenize_greedy_lookbehind_Ok()
+    {
+        var grammar = new Grammar(new Dictionary<string, GrammarToken[]>
         {
-            ("comment", "// /*"),
-            ("comment", "/* comment */"),
-        };
+            ["a"] = new GrammarToken[]
+            {
+                new(@"'[^']*'"),
+            },
+            ["b"] = new GrammarToken[]
+            {
+                new(@"foo|(^|[^\\])""[^""]*""", true, true)
+            }
+        });
+        TestCase(grammar, "foo \"bar\" 'baz'",
+            new StringToken[]
+            {
+                new("foo", "b"),
+                new("\"bar\"", "b"),
+                new("'baz'", "a"),
+            });
+    }
+    
+    [Fact]
+    public void Tokenize_rematch_Ok()
+    {
+        var grammar = new Grammar(new Dictionary<string, GrammarToken[]>
+        {
+            ["a"] = new GrammarToken[]
+            {
+                new(@"'[^'\r\n]*'"),
+            },
+            ["b"] = new GrammarToken[]
+            {
+                new(@"""[^""\r\n]*""", greedy: true)
+            },
+            ["c"] = new GrammarToken[]
+            {
+                new(@"<[^>\r\n]*>", greedy: true)
+            }
+        });
+        TestCase(grammar, "<'> '' ''\n<\"> \"\" \"\"",
+            new StringToken[]
+            {
+                new("<'>", "c"),
+                new(" '"),
+                new("' '", "a"),
+                new("'\n"),
+                new("<\">", "c"),
+                new("\"\"", "b"),
+                new("\"\"", "b"),
+            });
+    }
+
+    private static void TestCase(Grammar testGrammar, string code, StringToken[] expected)
+    {
+        var tokens = Prism.Tokenize(code, testGrammar);
+        tokens = tokens.Where(t => t.Length > 0).ToArray();
         Assert.NotNull(tokens);
         Assert.Equal(expected.Length, tokens.Length);
 
@@ -29,8 +92,8 @@ public class PrismTest
         {
             var token = tokens[i];
             var stringToken = Assert.IsType<StringToken>(token);
-            Assert.Equal(expected[i].Item1, stringToken.Type);
-            Assert.Equal(expected[i].Item2, stringToken.Content);
+            Assert.Equal(expected[i].Type, stringToken.Type);
+            Assert.Equal(expected[i].Content, stringToken.Content);
         }
     }
 }

@@ -16,6 +16,8 @@ public abstract class Token
         Alias = alias ?? Array.Empty<string>();
         Length = string.IsNullOrEmpty(matchedStr) ? 0 : matchedStr.Length;
     }
+
+    public abstract int GetContentLength();
 }
 
 public class StringToken : Token
@@ -26,6 +28,11 @@ public class StringToken : Token
     {
         Content = content;
     }
+
+    public override int GetContentLength()
+    {
+        return Content.Length;
+    }
 }
 
 public class StreamToken : Token
@@ -35,5 +42,10 @@ public class StreamToken : Token
     public StreamToken(Token[] content, string? type = null, string[]? alias = null, string? matchedStr = null) : base(type, alias, matchedStr)
     {
         Content = content;
+    }
+
+    public override int GetContentLength()
+    {
+        return Content.Length;
     }
 }

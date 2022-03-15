@@ -10,28 +10,28 @@ public static class Prism
         
         var head = new LinkedListNode<Token>(null!);
         var tail = new LinkedListNode<Token>(null!);
-        var originTextNode = new LinkedListNode<Token>(new StringToken(text, "origin-text"));
 
-        // var head = originTextNode;
         tokenList.AddFirst(head);
         tokenList.AddLast(tail);
-        tokenList.AddAfter(head, originTextNode);
+        AddAfter(tokenList, head, new StringToken(text, "origin-text"));
 
         MatchGrammar(text, tokenList, grammar, head, 0);
         return tokenList.Where(t => t != null!).ToArray();
     }
 
-    // private static Token[] ToArray(LinkedList<Token> list)
-    // {
-    //     var tokens = new List<Token>();
-    //     var node = list.First?.Next;
-    //     while (node != list.Last) 
-    //     {
-    //         tokens.Add(node.Value);
-    //         node = node.Next;
-    //     }
-    //     return tokens.ToArray();
-    // }
+    /// <summary>
+    /// Adds a new node with the given value to the list.
+    /// </summary>
+    /// <param name="tokenList"></param>
+    /// <param name="node"></param>
+    /// <param name="val"></param>
+    /// <returns></returns>
+    private static LinkedListNode<Token> AddAfter(LinkedList<Token> tokenList, LinkedListNode<Token> node, Token val)
+    {
+        var newNode = new LinkedListNode<Token>(val);
+        tokenList.AddAfter(node, newNode);
+        return newNode;
+    }
 
     private static void MatchGrammar(string text, LinkedList<Token> tokenList, Grammar grammar,
         LinkedListNode<Token> startNode, int startPos, RematchOptions? rematch = null)
@@ -50,7 +50,7 @@ public static class Prism
                 var greedy = patternObj.Greedy;
                 var alias = patternObj.Alias;
                 
-                // if (greedy && !patternObj.Pattern.m) {
+                // if (greedy && !patternObj.Pattern.global) {
                 //     // Without the global flag, lastIndex won't work
                 //     var flags = patternObj.pattern.toString().match(/[imsuy]*$/)[0];
                 //     patternObj.pattern = RegExp(patternObj.pattern.source, flags + 'g');
@@ -60,25 +60,25 @@ public static class Prism
                 
                 // iterate the token list and keep track of the current token/string position
                 var currentNode = startNode.Next;
-                // var pos = startPos;
                 
                 for (var pos = startPos; 
                      currentNode != tokenList.Last;
-                     pos += currentNode.Value.Length, currentNode = currentNode.Next)
+                     pos += currentNode.Value.GetContentLength(), currentNode = currentNode.Next)
                 {
-                    if (currentNode is null)
-                        break;
+                    // if (currentNode is null)
+                    //     break;
                     
                     if (pos >= rematch?.Reach)
                         break;
 
-                    if (tokenList.Count > text.Length)
+                    var tokenListCount = tokenList.Count - 2; // excludes head, tail
+                    if (tokenListCount > text.Length)
                         // Something went terribly wrong, ABORT, ABORT!
                         return;
 
                     var tokenVal = currentNode.Value;
 
-                    if (tokenVal is not StringToken stringToken)
+                    if (tokenVal.Length > 0 || tokenVal is not StringToken stringToken)
                         continue;
 
                     var str = stringToken.Content;
@@ -97,43 +97,43 @@ public static class Prism
                         var p = pos;
 
                         // find the node that contains the match
-                        p += currentNode.Value.Length;
+                        p += currentNode.Value.GetContentLength();
                         while (fromIdx >= p)
                         {
                             currentNode = currentNode.Next;
                             // if (currentNode is null)
                             //     break;
-                            p += currentNode.Value.Length;
+                            p += currentNode.Value.GetContentLength();
                         }
 
                         // if (currentNode is null)
                         //     break;
 
                         // adjust pos (and p)
-                        p -= currentNode.Value.Length;
+                        p -= currentNode.Value.GetContentLength();
                         pos = p;
 
                         // the current node is a Token, then the match starts inside another Token, which is invalid
-                        if (currentNode.Value is not StringToken)
+                        if (currentNode.Value.Length > 0)
                             continue;
 
                         // find the last node which is affected by this match
                         for (
                             var k = currentNode;
-                            k != tokenList.Last && (p < to || k?.Value is StringToken);
+                            k != tokenList.Last && (p < to || k.Value is StringToken);
                             k = k.Next)
                         {
-                            if (k is null)
-                                break;
+                            // if (k is null)
+                            //     break;
 
                             removeCount++;
-                            p += k.Value.Length;
+                            p += k.Value.GetContentLength();
                         }
 
                         removeCount--;
 
                         // replace with the new match
-                        str = text.Substring(pos, p - pos);
+                        str = Util.Slice(text, pos, p);
                         match.Index -= pos;
                     }
                     else
@@ -145,22 +145,20 @@ public static class Prism
 
                     var from = match.Index;
                     var matchStr = match.Groups[0];
-                    var before = str.Substring(0, from);
-                    var after = str.Substring(from + matchStr.Length);
+                    var before = Util.Slice(str, 0, from);
+                    var after = Util.Slice(str, from + matchStr.Length);
 
                     var reach = pos + str.Length;
                     if (reach > rematch?.Reach)
                         rematch.Reach = reach;
 
                     var removeFrom = currentNode.Previous;
-                    if (removeFrom is null)
-                        continue;
+                    // if (removeFrom is null)
+                    //     continue;
 
                     if (!string.IsNullOrEmpty(before))
                     {
-                        var newNode = new LinkedListNode<Token>(new StringToken(before));
-                        tokenList.AddAfter(removeFrom, newNode);
-                        removeFrom = newNode;
+                        removeFrom = AddAfter(tokenList, removeFrom, new StringToken(before));
                         pos += before.Length;
                     }
 
@@ -170,17 +168,13 @@ public static class Prism
                         ? new StreamToken(Tokenize(matchStr, inside), token, alias, matchStr)
                         : new StringToken(matchStr, token, alias, matchStr);
 
-                    var wrappedNode = new LinkedListNode<Token>(wrapped);
-                    tokenList.AddAfter(removeFrom, wrappedNode);
-                    currentNode = wrappedNode;
+                    currentNode = AddAfter(tokenList, removeFrom, wrapped);
 
                     if (!string.IsNullOrEmpty(after))
-                    {
-                        var afterNode = new LinkedListNode<Token>(new StringToken(after));
-                        tokenList.AddAfter(currentNode, afterNode);
-                    }
+                        AddAfter(tokenList, currentNode, new StringToken(after));
                     
-                    if (removeCount > 1) {
+                    if (removeCount > 1) 
+                    {
                         // at least one Token object was removed, so we have to do some rematching
                         // this can only happen if the current pattern is greedy
 
@@ -215,7 +209,7 @@ public static class Prism
         for (var i = 0; i < count && next != list.Last && next is not null; i++)
         {
             list.Remove(next);
-            next = next.Next;
+            next = node.Next;
         }
     }
     
