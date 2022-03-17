@@ -12,7 +12,6 @@ public class UtilTest
         var actual = Util.Encode(token);
         Assert.Equal(token.Type, actual.Type);
         Assert.Equal(token.Alias, actual.Alias);
-        Assert.Equal(token.Length, actual.Length);
         var actualToken = Assert.IsType<StringToken>(actual);
         Assert.Equal("// &lt;summary> it's comment &lt;/summary>", actualToken.Content);
     }
@@ -28,7 +27,6 @@ public class UtilTest
         var actual = Util.Encode(token);
         Assert.Equal(token.Type, actual.Type);
         Assert.Equal(token.Alias, actual.Alias);
-        Assert.Equal(token.Length, actual.Length);
         var actualToken = Assert.IsType<StreamToken>(actual);
         Assert.Equal(token.Content.Length, actualToken.Content.Length);
         var contentToken1 = Assert.IsType<StringToken>(actualToken.Content[1]);

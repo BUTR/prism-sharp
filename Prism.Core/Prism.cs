@@ -63,7 +63,7 @@ public static class Prism
                 
                 for (var pos = startPos; 
                      currentNode != tokenList.Last;
-                     pos += currentNode.Value.GetContentLength(), currentNode = currentNode.Next)
+                     pos += currentNode.Value.GetLength(), currentNode = currentNode.Next)
                 {
                     // if (currentNode is null)
                     //     break;
@@ -78,7 +78,8 @@ public static class Prism
 
                     var tokenVal = currentNode.Value;
 
-                    if (tokenVal.Length > 0 || tokenVal is not StringToken stringToken)
+                    // `tokenVal.Length > 0` is matched
+                    if (tokenVal.IsMatchedToken() || tokenVal is not StringToken stringToken)
                         continue;
 
                     var str = stringToken.Content;
@@ -97,37 +98,37 @@ public static class Prism
                         var p = pos;
 
                         // find the node that contains the match
-                        p += currentNode.Value.GetContentLength();
+                        p += currentNode.Value.GetLength();
                         while (fromIdx >= p)
                         {
                             currentNode = currentNode.Next;
                             // if (currentNode is null)
                             //     break;
-                            p += currentNode.Value.GetContentLength();
+                            p += currentNode.Value.GetLength();
                         }
 
                         // if (currentNode is null)
                         //     break;
 
                         // adjust pos (and p)
-                        p -= currentNode.Value.GetContentLength();
+                        p -= currentNode.Value.GetLength();
                         pos = p;
 
                         // the current node is a Token, then the match starts inside another Token, which is invalid
-                        if (currentNode.Value.Length > 0)
+                        if (currentNode.Value.IsMatchedToken())
                             continue;
 
                         // find the last node which is affected by this match
                         for (
                             var k = currentNode;
-                            k != tokenList.Last && (p < to || k.Value is StringToken);
+                            k != tokenList.Last && (p < to || (!k.Value.IsMatchedToken() && k.Value is StringToken));
                             k = k.Next)
                         {
                             // if (k is null)
                             //     break;
 
                             removeCount++;
-                            p += k.Value.GetContentLength();
+                            p += k.Value.GetLength();
                         }
 
                         removeCount--;
