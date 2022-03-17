@@ -19,20 +19,6 @@ public static class Prism
         return tokenList.Where(t => t != null!).ToArray();
     }
 
-    /// <summary>
-    /// Adds a new node with the given value to the list.
-    /// </summary>
-    /// <param name="tokenList"></param>
-    /// <param name="node"></param>
-    /// <param name="val"></param>
-    /// <returns></returns>
-    private static LinkedListNode<Token> AddAfter(LinkedList<Token> tokenList, LinkedListNode<Token> node, Token val)
-    {
-        var newNode = new LinkedListNode<Token>(val);
-        tokenList.AddAfter(node, newNode);
-        return newNode;
-    }
-
     private static void MatchGrammar(string text, LinkedList<Token> tokenList, Grammar grammar,
         LinkedListNode<Token> startNode, int startPos, RematchOptions? rematch = null)
     {
@@ -196,6 +182,20 @@ public static class Prism
             
             
         }
+    }
+    
+    /// <summary>
+    /// Adds a new node with the given value to the list.
+    /// </summary>
+    /// <param name="tokenList"></param>
+    /// <param name="node"></param>
+    /// <param name="val"></param>
+    /// <returns></returns>
+    private static LinkedListNode<Token> AddAfter(LinkedList<Token> tokenList, LinkedListNode<Token> node, Token val)
+    {
+        var newNode = new LinkedListNode<Token>(val);
+        tokenList.AddAfter(node, newNode);
+        return newNode;
     }
     
     /// <summary>
