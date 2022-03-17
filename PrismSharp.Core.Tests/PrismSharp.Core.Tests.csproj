@@ -5,8 +5,6 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
-
-        <RootNamespace>Prism.Core.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -23,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Prism.Core\Prism.Core.csproj" />
+      <ProjectReference Include="..\PrismSharp.Core\PrismSharp.Core.csproj" />
     </ItemGroup>
 
 </Project>

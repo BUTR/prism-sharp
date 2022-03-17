@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using Xunit;
 
-namespace Prism.Core.Tests;
+namespace PrismSharp.Core.Tests;
 
 public class UtilTest
 {

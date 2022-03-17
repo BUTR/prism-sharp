@@ -1,4 +1,4 @@
-namespace Prism.Core;
+namespace PrismSharp.Core;
 
 public abstract class Token
 {

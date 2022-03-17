@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using System.Xml.Schema;
 
-namespace Prism.Core;
+namespace PrismSharp.Core;
 
 /// <summary>
 /// The expansion of a simple `RegExp` literal to support additional properties.

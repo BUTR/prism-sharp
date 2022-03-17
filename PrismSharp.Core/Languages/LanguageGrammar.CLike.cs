@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Prism.Core.Languages;
+namespace PrismSharp.Core.Languages;
 
 public sealed partial class LanguageGrammar
 {

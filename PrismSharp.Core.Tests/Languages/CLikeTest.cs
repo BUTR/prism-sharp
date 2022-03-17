@@ -1,7 +1,7 @@
-using Prism.Core.Languages;
+using PrismSharp.Core.Languages;
 using Xunit;
 
-namespace Prism.Core.Tests.Languages;
+namespace PrismSharp.Core.Tests.Languages;
 
 public class CLikeTest
 {

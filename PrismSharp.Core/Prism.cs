@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Prism.Core;
+namespace PrismSharp.Core;
 
 public static class Prism
 {

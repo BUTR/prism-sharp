@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prism.Core", "Prism.Core\Prism.Core.csproj", "{F38E4F2F-66B2-4BCA-BBAC-70119AC7C835}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismSharp.Core", "PrismSharp.Core\PrismSharp.Core.csproj", "{F38E4F2F-66B2-4BCA-BBAC-70119AC7C835}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prism.Core.Tests", "Prism.Core.Tests\Prism.Core.Tests.csproj", "{6B42B19F-4C91-4BB2-8E36-C903E19A4CF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismSharp.Core.Tests", "PrismSharp.Core.Tests\PrismSharp.Core.Tests.csproj", "{6B42B19F-4C91-4BB2-8E36-C903E19A4CF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

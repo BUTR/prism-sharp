@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace Prism.Core.Tests;
+namespace PrismSharp.Core.Tests;
 
 public static class TestHelper
 {

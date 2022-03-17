@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Xunit;
 
-namespace Prism.Core.Tests;
+namespace PrismSharp.Core.Tests;
 
 public class PrismTest
 {
