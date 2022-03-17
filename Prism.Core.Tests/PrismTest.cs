@@ -18,7 +18,7 @@ public class PrismTest
                 new(@"\/\*[\s\S]*?(?:\*\/|$)", greedy: true)
             }
         });
-        TestCase(grammar, "// /*\n/* comment */",
+        TestHelper.TestCase(grammar, "// /*\n/* comment */",
             new StringToken[]
             {
                 new("// /*", "comment"),
@@ -41,7 +41,7 @@ public class PrismTest
                 new(@"foo|(^|[^\\])""[^""]*""", true, true)
             }
         });
-        TestCase(grammar, "foo \"bar\" 'baz'",
+        TestHelper.TestCase(grammar, "foo \"bar\" 'baz'",
             new StringToken[]
             {
                 new("foo", "b"),
@@ -68,7 +68,7 @@ public class PrismTest
                 new(@"<[^>\r\n]*>", greedy: true)
             }
         });
-        TestCase(grammar, "<'> '' ''\n<\"> \"\" \"\"",
+        TestHelper.TestCase(grammar, "<'> '' ''\n<\"> \"\" \"\"",
             new StringToken[]
             {
                 new("<'>", "c"),
@@ -79,44 +79,6 @@ public class PrismTest
                 new("\"\"", "b"),
                 new("\"\"", "b"),
             });
-    }
-
-    private static void TestCase(Grammar testGrammar, string code, Token[] expected)
-    {
-        var tokens = Prism.Tokenize(code, testGrammar);
-        var simpleTokens = tokens.Where(t => !IsBlankStringToken(t)).ToArray();
-        AssertDeepStrictEqual(simpleTokens, expected);
-    }
-
-    private static void AssertDeepStrictEqual(IReadOnlyList<Token> simpleTokens, IReadOnlyList<Token> expected)
-    {
-        Assert.NotNull(simpleTokens);
-        Assert.Equal(expected.Count, simpleTokens.Count);
-
-        for (var i = 0; i < expected.Count; i++)
-        {
-            var token = simpleTokens[i];
-            var expectedToken = expected[i];
-            
-            if (expectedToken is StringToken expectedStringToken)
-            {
-                var stringToken = Assert.IsType<StringToken>(token);
-                Assert.Equal(expectedStringToken.Type, stringToken.Type);
-                Assert.Equal(expectedStringToken.Content, stringToken.Content);
-                continue;
-            }
-
-            if (expectedToken is not StreamToken expectedStreamToken) 
-                continue;
-            
-            var streamToken = Assert.IsType<StreamToken>(token);
-            AssertDeepStrictEqual(streamToken.Content, expectedStreamToken.Content);
-        }
-    }
-
-    private static bool IsBlankStringToken(Token token)
-    {
-        return token is StringToken stringToken && string.IsNullOrWhiteSpace(stringToken.Content);
     }
 
 }
