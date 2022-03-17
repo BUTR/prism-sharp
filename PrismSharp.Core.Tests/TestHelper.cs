@@ -6,7 +6,7 @@ namespace PrismSharp.Core.Tests;
 
 public static class TestHelper
 {
-    public static void TestCase(Grammar testGrammar, string code, IReadOnlyList<Token> expected)
+    public static void RunTestCase(Grammar testGrammar, string code, IReadOnlyList<Token> expected)
     {
         var tokens = Prism.Tokenize(code, testGrammar);
         var simpleTokens = tokens.Where(t => !IsBlankStringToken(t)).ToArray();
@@ -22,7 +22,7 @@ public static class TestHelper
         {
             var token = simpleTokens[i];
             var expectedToken = expected[i];
-            
+
             if (expectedToken is StringToken expectedStringToken)
             {
                 var stringToken = Assert.IsType<StringToken>(token);
@@ -31,9 +31,9 @@ public static class TestHelper
                 continue;
             }
 
-            if (expectedToken is not StreamToken expectedStreamToken) 
+            if (expectedToken is not StreamToken expectedStreamToken)
                 continue;
-            
+
             var streamToken = Assert.IsType<StreamToken>(token);
             AssertDeepStrictEqual(streamToken.Content, expectedStreamToken.Content);
         }

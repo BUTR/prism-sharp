@@ -18,7 +18,7 @@ public class PrismTest
                 new(@"\/\*[\s\S]*?(?:\*\/|$)", greedy: true)
             }
         });
-        TestHelper.TestCase(grammar, "// /*\n/* comment */",
+        TestHelper.RunTestCase(grammar, "// /*\n/* comment */",
             new StringToken[]
             {
                 new("// /*", "comment"),
@@ -41,7 +41,7 @@ public class PrismTest
                 new(@"foo|(^|[^\\])""[^""]*""", true, true)
             }
         });
-        TestHelper.TestCase(grammar, "foo \"bar\" 'baz'",
+        TestHelper.RunTestCase(grammar, "foo \"bar\" 'baz'",
             new StringToken[]
             {
                 new("foo", "b"),
@@ -68,7 +68,7 @@ public class PrismTest
                 new(@"<[^>\r\n]*>", greedy: true)
             }
         });
-        TestHelper.TestCase(grammar, "<'> '' ''\n<\"> \"\" \"\"",
+        TestHelper.RunTestCase(grammar, "<'> '' ''\n<\"> \"\" \"\"",
             new StringToken[]
             {
                 new("<'>", "c"),
@@ -89,7 +89,7 @@ public class PrismTest
             ["a"] = new GrammarToken[] { new("a"), },
             ["b"] = new GrammarToken[] { new("^b", greedy: true) },
         });
-        TestHelper.TestCase(grammar, "bab",
+        TestHelper.RunTestCase(grammar, "bab",
             new StringToken[]
             {
                 new("b", "b"),
@@ -106,7 +106,7 @@ public class PrismTest
         {
             ["oh-no"] = new GrammarToken[] { new("$", greedy: true) },
         });
-        TestHelper.TestCase(grammar, "foo",
+        TestHelper.RunTestCase(grammar, "foo",
             new StringToken[]
             {
                 new("foo"), 
