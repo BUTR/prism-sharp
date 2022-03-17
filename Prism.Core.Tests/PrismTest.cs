@@ -51,7 +51,7 @@ public class PrismTest
     }
     
     [Fact]
-    public void Tokenize_rematch_Ok()
+    public void Tokenize_should_correctly_rematch_tokens()
     {
         var grammar = new Grammar(new Dictionary<string, GrammarToken[]>
         {
@@ -78,6 +78,38 @@ public class PrismTest
                 new("<\">", "c"),
                 new("\"\"", "b"),
                 new("\"\"", "b"),
+            });
+    }
+    
+    [Fact]
+    public void Tokenize_should_always_match_tokens_against_the_whole_text()
+    {
+        var grammar = new Grammar(new Dictionary<string, GrammarToken[]>
+        {
+            ["a"] = new GrammarToken[] { new("a"), },
+            ["b"] = new GrammarToken[] { new("^b", greedy: true) },
+        });
+        TestHelper.TestCase(grammar, "bab",
+            new StringToken[]
+            {
+                new("b", "b"),
+                new("a", "a"),
+                new("b"),
+            });
+    }
+    
+    [Fact]
+    public void Tokenize_from_prismjs_issue3052()
+    {
+        // If a greedy pattern creates an empty token at the end of the string, then this token should be discarded
+        var grammar = new Grammar(new Dictionary<string, GrammarToken[]>
+        {
+            ["oh-no"] = new GrammarToken[] { new("$", greedy: true) },
+        });
+        TestHelper.TestCase(grammar, "foo",
+            new StringToken[]
+            {
+                new("foo"), 
             });
     }
 

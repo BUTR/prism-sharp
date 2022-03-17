@@ -13,7 +13,7 @@ public static class Prism
 
         tokenList.AddFirst(head);
         tokenList.AddLast(tail);
-        AddAfter(tokenList, head, new StringToken(text, "origin-text"));
+        AddAfter(tokenList, head, new StringToken(text));
 
         MatchGrammar(text, tokenList, grammar, head, 0);
         return tokenList.Where(t => t != null!).ToArray();
