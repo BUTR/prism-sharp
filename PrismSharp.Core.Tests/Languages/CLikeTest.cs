@@ -99,7 +99,7 @@ bar */";
     }
 
     [Fact]
-    public void comment_test_from_prismjs_issue1340_ok()
+    public void comment_test_ok_from_prismjs_issue1340()
     {
         const string code = @"/*
 //

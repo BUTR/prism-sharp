@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -9,7 +10,7 @@ public static class TestHelper
     public static void RunTestCase(Grammar testGrammar, string code, IReadOnlyList<Token> expected)
     {
         var tokens = Prism.Tokenize(code, testGrammar);
-        var simpleTokens = tokens.Where(t => !IsBlankStringToken(t)).ToArray();
+        var simpleTokens = Simplify(tokens);
         AssertDeepStrictEqual(simpleTokens, expected);
     }
 
@@ -37,6 +38,24 @@ public static class TestHelper
             var streamToken = Assert.IsType<StreamToken>(token);
             AssertDeepStrictEqual(streamToken.Content, expectedStreamToken.Content);
         }
+    }
+
+    private static Token[] Simplify(IReadOnlyCollection<Token> tokens)
+    {
+        return tokens
+            .Where(t => !IsBlankStringToken(t))
+            .Select(InnerSimplify)
+            .ToArray();
+    }
+
+    private static Token InnerSimplify(Token token)
+    {
+        return token switch
+        {
+            StringToken stringToken => new StringToken(stringToken.Content, stringToken.Type),
+            StreamToken streamToken => new StreamToken(Simplify(streamToken.Content), streamToken.Type),
+            _ => throw new ArgumentException("Type is not support!", nameof(token))
+        };
     }
 
     private static bool IsBlankStringToken(Token token)

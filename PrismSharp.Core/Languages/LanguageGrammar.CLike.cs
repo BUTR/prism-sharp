@@ -2,9 +2,9 @@ using System.Text.RegularExpressions;
 
 namespace PrismSharp.Core.Languages;
 
-public sealed partial class LanguageGrammar
+public static partial class LanguageGrammar
 {
-    public static readonly Grammar CLike = new (new Dictionary<string, GrammarToken[]>
+    public static Grammar CLike => new (new Dictionary<string, GrammarToken[]>
     {
         ["comment"] = new GrammarToken[]
         {
@@ -17,7 +17,7 @@ public sealed partial class LanguageGrammar
         },
         ["class-name"] = new GrammarToken[]
         {
-            new (new Regex(@"(\b(?:class|extends|implements|instanceof|interface|new|trait)\s+|\bcatch\s+\()[\w.\\]+", RegexOptions.IgnoreCase), 
+            new (new Regex(@"(\b(?:class|extends|implements|instanceof|interface|new|trait)\s+|\bcatch\s+\()[\w.\\]+", RegexOptions.IgnoreCase),
                 true,
                 inside: new Dictionary<string, GrammarToken[]>
                 {
