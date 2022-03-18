@@ -18,7 +18,7 @@ public class CLikeTest
             new("false", "boolean"),
             new(";", "punctuation"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.CLike, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.CLike, code, expected);
     }
 
     [Fact]
@@ -79,7 +79,7 @@ catch (bar)";
             }, "class-name"),
             new StringToken(")", "punctuation"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.CLike, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.CLike, code, expected);
     }
 
     [Fact]
@@ -95,7 +95,7 @@ bar */";
             new("/**/", "comment"),
             new("/* foo\nbar */", "comment"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.CLike, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.CLike, code, expected);
     }
 
     [Fact]
@@ -108,7 +108,7 @@ bar */";
         {
             new("/*\n//\n*/", "comment"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.CLike, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.CLike, code, expected);
     }
 
     [Fact]
@@ -129,7 +129,7 @@ f42()";
             new("(", "punctuation"),
             new(")", "punctuation"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.CLike, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.CLike, code, expected);
     }
 
     [Fact]
@@ -159,7 +159,7 @@ break; continue;";
             new("break", "keyword"), new(";", "punctuation"),
             new("continue", "keyword"), new(";", "punctuation"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.CLike, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.CLike, code, expected);
     }
 
     [Fact]
@@ -182,7 +182,7 @@ break; continue;";
             new("0xbabe", "number"),
             new("0xBABE", "number"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.CLike, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.CLike, code, expected);
     }
 
     [Fact]
@@ -205,7 +205,7 @@ break; continue;";
             new("?", "operator"), new("*", "operator"), new("/", "operator"), new("~", "operator"),
             new("^", "operator"), new("%", "operator"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.CLike, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.CLike, code, expected);
     }
 
     [Fact]
@@ -235,6 +235,6 @@ bar'
             new("'foo // bar'", "string"),
             new("//comment", "comment"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.CLike, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.CLike, code, expected);
     }
 }

@@ -2,11 +2,9 @@ using System.Text.RegularExpressions;
 
 namespace PrismSharp.Core.Languages;
 
-public static partial class LanguageGrammar
+public class Markup : IGrammarDefinition
 {
-    public static Grammar Markup => CreateMarkupGrammar();
-
-    private static Grammar CreateMarkupGrammar()
+    public Grammar Define()
     {
         var markupGrammar = new Grammar
         {
@@ -30,9 +28,7 @@ public static partial class LanguageGrammar
                     {
                         ["internal-subset"] = new GrammarToken[]
                         {
-                            new(@"(^[^\[]*\[)[\s\S]+(?=\]>$)", true, true
-                                // TODO: inside
-                            )
+                            new(@"(^[^\[]*\[)[\s\S]+(?=\]>$)", true, true /* update `inside` later */)
                         },
                         ["string"] = new GrammarToken[]
                         {
@@ -106,13 +102,4 @@ public static partial class LanguageGrammar
 
         return markupGrammar;
     }
-
-    public static Grammar Html => Markup;
-    public static Grammar Mathml => Markup;
-    public static Grammar Svg => Markup;
-
-    // TODO
-    // public static Grammar Xml => Markup;
-    // public static Grammar Atom => Xml;
-    // public static Grammar Rss => Xml;
 }

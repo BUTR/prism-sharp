@@ -2,13 +2,14 @@ using System.Text.RegularExpressions;
 
 namespace PrismSharp.Core.Languages;
 
-public static partial class LanguageGrammar
-{
-    public static Grammar C => CreateCGrammar();
+// From https://github.com/PrismJS/prism/blob/master/components/prism-c.js
 
-    private static Grammar CreateCGrammar()
+public class C : IGrammarDefinition
+{
+    public Grammar Define()
     {
-        var extendCLikeGrammar = CLike;
+        // extends from c like grammar
+        var extendCLikeGrammar = new CLike().Define();
 
         extendCLikeGrammar["comment"] = new GrammarToken[]
         {

@@ -3,6 +3,8 @@ using Xunit;
 
 namespace PrismSharp.Core.Tests.Languages;
 
+// From https://github.com/PrismJS/prism/blob/master/tests/languages/c/
+
 public class CTest
 {
     [Fact]
@@ -41,7 +43,7 @@ u'\U0001f34c'";
             new("'\\xFF'", "char"),
             new("\nu"), new("'\\U0001f34c'", "char"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.C, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.C, code, expected);
     }
 
     [Fact]
@@ -67,7 +69,7 @@ u'\U0001f34c'";
             new("/*\n * comment\n */", "comment"),
             new("/* open-ended comment", "comment"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.C, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.C, code, expected);
     }
 
     [Fact]
@@ -104,7 +106,7 @@ stderr";
             new("stdout", "constant"),
             new("stderr", "constant"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.C, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.C, code, expected);
     }
 
     [Fact]
@@ -128,7 +130,7 @@ bar
             new(")", "punctuation"),
             new(";", "punctuation"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.C, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.C, code, expected);
     }
 
     [Fact]
@@ -187,6 +189,6 @@ static dtrace_helptrace_t *bar;";
             new("bar"),
             new(";", "punctuation"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.C, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.C, code, expected);
     }
 }

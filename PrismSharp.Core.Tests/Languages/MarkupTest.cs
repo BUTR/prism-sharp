@@ -17,7 +17,7 @@ foo bar baz
             new("<![CDATA[ foo bar baz ]]>", "cdata"),
             new("<![CDATA[\nfoo bar baz\n]]>", "cdata"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.Markup, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.Markup, code, expected);
     }
 
     [Fact]
@@ -33,7 +33,7 @@ baz -->";
             new("<!-- foo bar -->", "comment"),
             new("<!-- foo bar\nbaz -->", "comment"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.Markup, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.Markup, code, expected);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ type=""text/xsl""?>";
             new("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "prolog"),
             new("<?xml-stylesheet href=\"tei2html.xsl\"\ntype=\"text/xsl\"?>", "prolog"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.Markup, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.Markup, code, expected);
     }
 
     [Fact]
@@ -70,7 +70,7 @@ type=""text/xsl""?>";
             new("&#x26f5;", "entity"),
             new("\n#foo;"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.Markup, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.Markup, code, expected);
     }
 
     [Fact]
@@ -203,7 +203,7 @@ type=""text/xsl""?>";
                 new StringToken(">", "punctuation"),
             }, "doctype"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.Markup, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.Markup, code, expected);
     }
 
     [Fact]
@@ -297,7 +297,7 @@ type=""text/xsl""?>";
             }, "tag"),
             new StringToken("\n<div")
         };
-        TestHelper.RunTestCase(LanguageGrammar.Markup, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.Markup, code, expected);
     }
 
     [Fact]
@@ -469,7 +469,7 @@ baz"">
                 new StringToken(">", "punctuation")
             }, "tag"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.Markup, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.Markup, code, expected);
     }
 
     [Fact]
@@ -543,7 +543,7 @@ baz"">
                 new StringToken(">", "punctuation"),
             }, "tag"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.Markup, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.Markup, code, expected);
     }
 
     [Fact]
@@ -562,6 +562,6 @@ baz"">
                 new StringToken(">", "punctuation")
             }, "tag"),
         };
-        TestHelper.RunTestCase(LanguageGrammar.Markup, code, expected);
+        TestHelper.RunTestCase(LanguageGrammars.Markup, code, expected);
     }
 }
