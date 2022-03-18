@@ -6,26 +6,38 @@ All supported language grammars are [here](https://github.com/tatwd/prism-sharp/
 
 ## Getting Started
 
-Using `PrismSharp.Core` package to tokenize a programing language:
+### Tokenize Code
 
+Install `PrismSharp.Core` package:
+```sh
+dotnet add package PrismSharp.Core --prerelease
+```
+
+Then,
 ```csharp
 using PrismSharp.Core;
 
 var text = @"<p>Hello world!</p>"
-var grammar = LanguageGrammars.Html;
+var grammar = LanguageGrammars.Html; // or defined yourself
 var tokens = Prism.Tokenize(text, grammar);
 ```
 
-Using `PrismSharp.Highlighting.HTML` package to highlight code via html:
+### Highlight Code
 
+Install `PrismSharp.Highlighting.HTML` package:
+```sh
+dotnet add package PrismSharp.Highlighting.HTML --prerelease
+```
+
+Then,
 ```csharp
 using PrismSharp.Core;
 using PrismSharp.Highlighting.HTML;
 
 var text = @"<p>Hello world!</p>"
-var grammar = LanguageGrammars.Html;
+var grammar = LanguageGrammars.Html; // or defined yourself
 var highlighter = new HtmlHighlighter();
 var html = highlighter.Highlight(text, grammar, "html");
 ```
 
-The css styles can customize yourself, or download from [PrismJS](https://prismjs.com/download.html).
+_The css styles can customize yourself, or download from [PrismJS](https://prismjs.com/download.html)._
