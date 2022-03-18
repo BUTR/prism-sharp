@@ -4,7 +4,7 @@
         <PackageId>PrismSharp.Core</PackageId>
         <Version>0.1.0-build.1</Version>
         <Description>A porting of PrismJS to C# or .NET.</Description>
-        <PackageLicenseUrl>LICENSE</PackageLicenseUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
