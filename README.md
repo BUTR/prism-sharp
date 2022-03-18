@@ -17,7 +17,7 @@ Then,
 ```csharp
 using PrismSharp.Core;
 
-var text = @"<p>Hello world!</p>"
+var text = @"<p>Hello world!</p>";
 var grammar = LanguageGrammars.Html; // or defined yourself
 var tokens = Prism.Tokenize(text, grammar);
 ```
@@ -34,7 +34,7 @@ Then,
 using PrismSharp.Core;
 using PrismSharp.Highlighting.HTML;
 
-var text = @"<p>Hello world!</p>"
+var text = @"<p>Hello world!</p>";
 var grammar = LanguageGrammars.Html; // or defined yourself
 var highlighter = new HtmlHighlighter();
 var html = highlighter.Highlight(text, grammar, "html");
