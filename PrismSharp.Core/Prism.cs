@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace PrismSharp.Core;
 
 public static class Prism
@@ -22,9 +20,10 @@ public static class Prism
     private static void MatchGrammar(string text, LinkedList<Token> tokenList, Grammar grammar,
         LinkedListNode<Token> startNode, int startPos, RematchOptions? rematch = null)
     {
-        foreach (var (token, patterns) in grammar.GrammarTokenMap)
+        foreach (var kv in grammar.GrammarTokenMap)
         {
-
+            var token = kv.Key;
+            var patterns = kv.Value;
             for (var j = 0; j < patterns.Length; ++j)
             {
                 if (rematch?.Cause == token + ',' + j)

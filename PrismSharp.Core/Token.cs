@@ -14,7 +14,7 @@ public abstract class Token
     {
         Type = type;
         Alias = alias ?? Array.Empty<string>();
-        Length = string.IsNullOrEmpty(matchedStr) ? 0 : matchedStr.Length;
+        Length = matchedStr?.Length ?? 0;
     }
 
     public bool IsMatchedToken()
