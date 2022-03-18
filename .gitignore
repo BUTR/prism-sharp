@@ -2,6 +2,7 @@
 .vscode/
 bin/
 obj/
+output/
 
 *.nuget
 *.user
