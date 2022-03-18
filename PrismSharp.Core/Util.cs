@@ -4,27 +4,6 @@ namespace PrismSharp.Core;
 
 public static class Util
 {
-    // public static Token Encode(Token token)
-    // {
-    //     if (token is StringToken stringToken)
-    //     {
-    //         return new StringToken(Encode(stringToken.Content), stringToken.Type, stringToken.Alias);
-    //     }
-    //
-    //     if (token is not StreamToken streamToken)
-    //         throw new ArgumentException("type is invalid", nameof(token));
-    //
-    //     var encoded = streamToken.Content.Select(Encode).ToArray();
-    //     return new StreamToken(encoded, streamToken.Type, streamToken.Alias);
-    // }
-    //
-    // private static string Encode(string content)
-    // {
-    //     return content.Replace("&", "&amp;")
-    //         .Replace("<", "&lt;")
-    //         .Replace("\u00a0", " ");
-    // }
-
     public static string Slice(string str, int startIndex, int? endIndex = null)
     {
         if (string.IsNullOrEmpty(str)) return string.Empty;

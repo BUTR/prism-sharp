@@ -47,25 +47,6 @@ public class HtmlHighlighter : IHighlighter
         return htmlSb.ToString();
     }
 
-    // private static Token[] Encode(Token[] tokens)
-    // {
-    //     return tokens.Select(Encode).ToArray();
-    // }
-
-    // private static Token Encode(Token token)
-    // {
-    //     if (token is StringToken stringToken)
-    //     {
-    //         return new StringToken(Encode(stringToken.Content), stringToken.Type, stringToken.Alias);
-    //     }
-    //
-    //     if (token is not StreamToken streamToken)
-    //         throw new ArgumentException("type is invalid", nameof(token));
-    //
-    //     var encoded = streamToken.Content.Select(Encode).ToArray();
-    //     return new StreamToken(encoded, streamToken.Type, streamToken.Alias);
-    // }
-
     private static string Encode(string content)
     {
         return content.Replace("&", "&amp;")
