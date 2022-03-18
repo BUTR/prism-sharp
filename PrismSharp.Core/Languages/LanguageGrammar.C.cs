@@ -25,7 +25,7 @@ public static partial class LanguageGrammar
                 true,
                 true,
                 new []{"property"},
-                new Dictionary<string, GrammarToken[]>
+                new Grammar
                 {
                     ["string"] = new GrammarToken[]
                     {
@@ -48,7 +48,7 @@ public static partial class LanguageGrammar
                     ["punctuation"] = new GrammarToken[]{new(@"##|\\(?=[\r\n])")},
                     ["expression"] = new GrammarToken[]
                     {
-                        new(@"\S[\s\S]*", inside: extendCLikeGrammar.GrammarTokenMap)
+                        new(@"\S[\s\S]*", inside: extendCLikeGrammar)
                     },
                 })
         };

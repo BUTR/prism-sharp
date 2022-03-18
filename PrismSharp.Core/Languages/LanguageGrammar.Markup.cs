@@ -8,7 +8,7 @@ public static partial class LanguageGrammar
 
     private static Grammar CreateMarkupGrammar()
     {
-        var markupGrammar = new Grammar(new Dictionary<string, GrammarToken[]>
+        var markupGrammar = new Grammar
         {
             ["comment"] = new GrammarToken[]
             {
@@ -26,7 +26,7 @@ public static partial class LanguageGrammar
                         @"<!DOCTYPE(?:[^>""'[\]]|""[^""]*""|'[^']*')+(?:\[(?:[^<""'\]]|""[^""]*""|'[^']*'|<(?!!--)|<!--(?:[^-]|-(?!->))*-->)*\]\s*)?>",
                         RegexOptions.IgnoreCase),
                     greedy: true,
-                    inside: new Dictionary<string, GrammarToken[]>
+                    inside: new Grammar
                     {
                         ["internal-subset"] = new GrammarToken[]
                         {
@@ -61,11 +61,11 @@ public static partial class LanguageGrammar
                 new(
                     @"<\/?(?!\d)[^\s>\/=$<%]+(?:\s(?:\s*[^\s>\/=]+(?:\s*=\s*(?:""[^""]*""|'[^']*'|[^\s'"">=]+(?=[\s>]))|(?=[\s/>])))+)?\s*\/?>",
                     greedy: true,
-                    inside: new Dictionary<string, GrammarToken[]>
+                    inside: new Grammar
                     {
                         ["tag"] = new GrammarToken[]
                         {
-                            new(@"^<\/?[^\s>\/]+", inside: new Dictionary<string, GrammarToken[]>
+                            new(@"^<\/?[^\s>\/]+", inside: new Grammar
                             {
                                 ["punctuation"] = new GrammarToken[] { new(@"^<\/?") },
                                 ["namespace"] = new GrammarToken[] { new(@"^[^\s>\/:]+:") },
@@ -75,7 +75,7 @@ public static partial class LanguageGrammar
                         ["attr-value"] = new GrammarToken[]
                         {
                             new(@"=\s*(?:""[^""]*""|'[^']*'|[^\s'"">=]+)",
-                                inside: new Dictionary<string, GrammarToken[]>
+                                inside: new Grammar
                                 {
                                     ["punctuation"] = new GrammarToken[]
                                     {
@@ -87,7 +87,7 @@ public static partial class LanguageGrammar
                         ["punctuation"] = new GrammarToken[] { new(@"\/?>") },
                         ["attr-name"] = new GrammarToken[]
                         {
-                            new(@"[^\s>\/]+", inside: new Dictionary<string, GrammarToken[]>
+                            new(@"[^\s>\/]+", inside: new Grammar
                             {
                                 ["namespace"] = new GrammarToken[] { new(@"^[^\s>\/:]+:") }
                             })
@@ -99,7 +99,7 @@ public static partial class LanguageGrammar
                 new(new Regex(@"&[\da-z]{1,8};", RegexOptions.IgnoreCase), alias: new[] { "named-entity" }),
                 new(new Regex(@"&#x?[\da-f]{1,8};", RegexOptions.IgnoreCase))
             }
-        });
+        };
 
         markupGrammar["tag"][0].Inside!["attr-value"][0].Inside!["entity"] = markupGrammar["entity"];
         markupGrammar["doctype"][0].Inside!["internal-subset"][0].Inside = markupGrammar;

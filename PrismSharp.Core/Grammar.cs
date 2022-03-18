@@ -3,13 +3,11 @@ namespace PrismSharp.Core;
 
 public class Grammar
 {
-    // property name is type
-    // value is RegExp | GrammarToken | Array<RegExp | GrammarToken>
     public IDictionary<string, GrammarToken[]> GrammarTokenMap { get; }
 
-    public Grammar(IDictionary<string, GrammarToken[]>? map)
+    public Grammar()
     {
-        GrammarTokenMap = map ?? new Dictionary<string, GrammarToken[]>(0);
+        GrammarTokenMap = new Dictionary<string, GrammarToken[]>(8);
     }
 
     public GrammarToken[] this[string key]
@@ -17,5 +15,4 @@ public class Grammar
         get => GrammarTokenMap[key];
         set => GrammarTokenMap[key] = value;
     }
-
 }

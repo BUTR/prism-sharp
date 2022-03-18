@@ -4,7 +4,7 @@ namespace PrismSharp.Core.Languages;
 
 public static partial class LanguageGrammar
 {
-    public static Grammar CLike => new (new Dictionary<string, GrammarToken[]>
+    public static Grammar CLike => new Grammar
     {
         ["comment"] = new GrammarToken[]
         {
@@ -19,7 +19,7 @@ public static partial class LanguageGrammar
         {
             new (new Regex(@"(\b(?:class|extends|implements|instanceof|interface|new|trait)\s+|\bcatch\s+\()[\w.\\]+", RegexOptions.IgnoreCase),
                 true,
-                inside: new Dictionary<string, GrammarToken[]>
+                inside: new Grammar
                 {
                     ["punctuation"] = new GrammarToken[]
                     {
@@ -51,5 +51,5 @@ public static partial class LanguageGrammar
         {
             new (@"[{}[\];(),.:]")
         }
-    });
+    };
 }

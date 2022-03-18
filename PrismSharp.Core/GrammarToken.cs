@@ -18,20 +18,25 @@ public class GrammarToken
     public Grammar? Inside { get; set; }
 
 
-    public GrammarToken(string pattern, bool lookbehind = false, bool greedy = false, string[]? alias = null,
-        IDictionary<string, GrammarToken[]>? inside = null)
-        : this(new Regex(pattern), lookbehind, greedy, alias, inside)
+    public GrammarToken(string pattern,
+        bool lookbehind = false,
+        bool greedy = false,
+        string[]? alias = null,
+        Grammar? inside = null) : this(new Regex(pattern), lookbehind, greedy, alias, inside)
     {
     }
 
-    public GrammarToken(Regex pattern, bool lookbehind = false, bool greedy = false, string[]? alias = null,
-        IDictionary<string, GrammarToken[]>? inside = null)
+    public GrammarToken(Regex pattern,
+        bool lookbehind = false,
+        bool greedy = false,
+        string[]? alias = null,
+        Grammar? inside = null)
     {
         Pattern = pattern;
         Lookbehind = lookbehind;
         Greedy = greedy;
         Alias = alias ?? Array.Empty<string>();
-        Inside = inside == null ? null : new Grammar(inside);
+        Inside = inside;
     }
 
 }
