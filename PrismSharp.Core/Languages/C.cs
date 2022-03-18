@@ -22,10 +22,12 @@ public class C : IGrammarDefinition
         };
         extendCLikeGrammar["macro"] = new GrammarToken[]
         {
-            new(new Regex(@"(^[\t ]*)#\s*[a-z](?:[^\r\n\\/]|\/(?!\*)|\/\*(?:[^*]|\*(?!\/))*\*\/|\\(?:\r\n|[\s\S]))*", RegexOptions.IgnoreCase | RegexOptions.Multiline),
+            new(
+                new Regex(@"(^[\t ]*)#\s*[a-z](?:[^\r\n\\/]|\/(?!\*)|\/\*(?:[^*]|\*(?!\/))*\*\/|\\(?:\r\n|[\s\S]))*",
+                    RegexOptions.IgnoreCase | RegexOptions.Multiline),
                 true,
                 true,
-                new []{"property"},
+                new[] { "property" },
                 new Grammar
                 {
                     ["string"] = new GrammarToken[]
@@ -38,15 +40,16 @@ public class C : IGrammarDefinition
                     ["macro-name"] = new GrammarToken[]
                     {
                         new(new Regex(@"(^#\s*define\s+)\w+\b(?!\()", RegexOptions.IgnoreCase), true),
-                        new(new Regex(@"(^#\s*define\s+)\w+\b(?=\()", RegexOptions.IgnoreCase), true, alias: new []{"function"}),
+                        new(new Regex(@"(^#\s*define\s+)\w+\b(?=\()", RegexOptions.IgnoreCase), true,
+                            alias: new[] { "function" }),
                     },
                     ["directive"] = new GrammarToken[]
                     {
                         // highlight macro directives as keywords
-                        new(@"^(#\s*)[a-z]+", true, alias: new []{"keyword"})
+                        new(@"^(#\s*)[a-z]+", true, alias: new[] { "keyword" })
                     },
-                    ["directive-hash"] = new GrammarToken[]{new(@"^#")},
-                    ["punctuation"] = new GrammarToken[]{new(@"##|\\(?=[\r\n])")},
+                    ["directive-hash"] = new GrammarToken[] { new(@"^#") },
+                    ["punctuation"] = new GrammarToken[] { new(@"##|\\(?=[\r\n])") },
                     ["expression"] = new GrammarToken[]
                     {
                         new(@"\S[\s\S]*", inside: extendCLikeGrammar)
