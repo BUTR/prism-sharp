@@ -150,22 +150,22 @@ public static class Prism
                     if (after.Length > 0)
                         AddAfter(tokenList, currentNode, new StringToken(after));
 
-                    if (removeCount > 1)
+                    if (removeCount <= 1)
+                        continue;
+
+                    // at least one Token object was removed, so we have to do some rematching
+                    // this can only happen if the current pattern is greedy
+
+                    var nestedRematch = new RematchOptions
                     {
-                        // at least one Token object was removed, so we have to do some rematching
-                        // this can only happen if the current pattern is greedy
+                        Cause = token + ',' + j,
+                        Reach = reach
+                    };
+                    MatchGrammar(text, tokenList, grammar, currentNode.Previous!, pos, nestedRematch);
 
-                        var nestedRematch = new RematchOptions
-                        {
-                            Cause = token + ',' + j,
-                            Reach = reach
-                        };
-                        MatchGrammar(text, tokenList, grammar, currentNode.Previous!, pos, nestedRematch);
-
-                        // the reach might have been extended because of the rematching
-                        if (nestedRematch.Reach > rematch?.Reach)
-                            rematch.Reach = nestedRematch.Reach;
-                    }
+                    // the reach might have been extended because of the rematching
+                    if (nestedRematch.Reach > rematch?.Reach)
+                        rematch.Reach = nestedRematch.Reach;
 
                 }
             }
