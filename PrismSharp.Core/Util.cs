@@ -6,7 +6,6 @@ public static class Util
 {
     public static string Slice(string str, int startIndex, int? endIndex = null)
     {
-        if (string.IsNullOrEmpty(str)) return string.Empty;
         if (startIndex >= str.Length) return string.Empty;
         return endIndex.HasValue
             ? str.Substring(startIndex, endIndex.Value - startIndex)
@@ -19,13 +18,12 @@ public static class Util
         var myMatch = new MyMatch(match);
         var matchGroups = myMatch.Groups;
 
-        if (myMatch.Success && lookbehind && matchGroups.Length > 1 &&
-            !string.IsNullOrEmpty(matchGroups[1]))
+        if (myMatch.Success && lookbehind && matchGroups.Length > 1 && matchGroups[1].Length > 0)
         {
             // change the match to remove the text matched by the Prism lookbehind group
             var lookbehindLength = matchGroups[1].Length;
             myMatch.Index += lookbehindLength;
-            matchGroups[0] = matchGroups[0].Substring(lookbehindLength);
+            matchGroups[0] = Slice(matchGroups[0], lookbehindLength);
         }
 
         return myMatch;
@@ -44,16 +42,10 @@ public static class Util
             Groups = ParseGroups(match);
         }
 
-        private string[] ParseGroups(Match match)
+        private static string[] ParseGroups(Match match)
         {
-            var list = new List<string>(match.Groups.Count);
-
-            foreach (Group g in match.Groups)
-            {
-                list.Add(g.Value);
-            }
-
-            return list.ToArray();
+            // trim end with `\r`
+            return (from Group g in match.Groups select g.Value.TrimEnd('\r')).ToArray();
         }
     }
 }
