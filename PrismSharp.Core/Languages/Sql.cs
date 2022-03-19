@@ -2,6 +2,8 @@ using System.Text.RegularExpressions;
 
 namespace PrismSharp.Core.Languages;
 
+// From https://github.com/PrismJS/prism/blob/master/components/prism-sql.js
+
 public class Sql : IGrammarDefinition
 {
     public Grammar Define()
