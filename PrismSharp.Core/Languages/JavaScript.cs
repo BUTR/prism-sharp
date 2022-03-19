@@ -7,7 +7,7 @@ public class JavaScript : IGrammarDefinition
     public Grammar Define()
     {
         var javascriptGrammar = new CLike().Define();
-        var regexGrammar = new RegExp().Define();
+        // var regexGrammar = new RegExp().Define();
 
         javascriptGrammar["class-name"] = javascriptGrammar["class-name"]
             .Concat(new GrammarToken[]
@@ -75,7 +75,7 @@ public class JavaScript : IGrammarDefinition
                             new(@"^(\/)[\s\S]+(?=\/[a-z]*$)",
                                 true,
                                 alias: new[] { "language-regex" },
-                                inside: regexGrammar)
+                                inside: null/*regexGrammar*/) // test `regex_feature` failed if inside by regex grammar
                         },
                         ["regex-delimiter"] = new GrammarToken[] { new(@"^\/|\/$") },
                         ["regex-flags"] = new GrammarToken[] { new(@"^[a-z]+$") }
