@@ -18,4 +18,5 @@ public class LanguageGrammars
     public static Grammar Xml => Markup;
     public static Grammar Atom => Xml;
     public static Grammar Rss => Xml;
+    public static Grammar Sql => new Sql().Define();
 }
