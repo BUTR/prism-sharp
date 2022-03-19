@@ -50,7 +50,7 @@ public class RegExp : IGrammarDefinition
                             })
                         },
                         ["special-escape"] = new []{specialEscape},
-                        ["char-set'"] = new []{charSetWithoutDot},
+                        ["char-set"] = new []{charSetWithoutDot},
                         ["escape"] = new []{escape}
                     })
             },
