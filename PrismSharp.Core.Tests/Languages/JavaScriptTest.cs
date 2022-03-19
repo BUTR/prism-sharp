@@ -2,6 +2,8 @@ using Xunit;
 
 namespace PrismSharp.Core.Tests.Languages;
 
+// From https://github.com/PrismJS/prism/blob/master/tests/languages/javascript/
+
 public class JavaScriptTest
 {
     [Fact]
