@@ -21,7 +21,7 @@ public class CLike : IGrammarDefinition
             },
             ["class-name"] = new GrammarToken[]
             {
-                new (new Regex(@"(\b(?:class|extends|implements|instanceof|interface|new|trait)\s+|\bcatch\s+\()[\w.\\]+", RegexOptions.IgnoreCase),
+                new (new Regex(@"(\b(?:class|extends|implements|instanceof|interface|new|trait)\s+|\bcatch\s+\()[\w.\\]+", RegexOptions.Compiled | RegexOptions.IgnoreCase),
                     true,
                     inside: new Grammar
                     {

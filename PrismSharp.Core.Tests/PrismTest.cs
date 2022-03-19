@@ -22,7 +22,6 @@ public class PrismTest
             new StringToken[]
             {
                 new("// /*", "comment"),
-                // new("\n"),
                 new("/* comment */", "comment"),
             });
     }

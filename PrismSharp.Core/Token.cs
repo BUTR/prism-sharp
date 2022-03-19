@@ -34,7 +34,10 @@ public class StringToken : Token
 {
     public string Content { get; }
 
-    public StringToken(string content, string? type = null, string[]? alias = null, string? matchedStr = null) : base(type, alias, matchedStr)
+    public StringToken(string content,
+        string? type = null,
+        string[]? alias = null,
+        string? matchedStr = null) : base(type, alias, matchedStr)
     {
         Content = content;
     }
@@ -49,7 +52,10 @@ public class StreamToken : Token
 {
     public Token[] Content { get; }
 
-    public StreamToken(Token[] content, string? type = null, string[]? alias = null, string? matchedStr = null) : base(type, alias, matchedStr)
+    public StreamToken(Token[] content,
+        string? type = null,
+        string[]? alias = null,
+        string? matchedStr = null) : base(type, alias, matchedStr)
     {
         Content = content;
     }

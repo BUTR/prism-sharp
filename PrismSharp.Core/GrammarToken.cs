@@ -21,7 +21,7 @@ public class GrammarToken
         bool lookbehind = false,
         bool greedy = false,
         string[]? alias = null,
-        Grammar? inside = null) : this(new Regex(pattern), lookbehind, greedy, alias, inside)
+        Grammar? inside = null) : this(new Regex(pattern, RegexOptions.Compiled), lookbehind, greedy, alias, inside)
     {
     }
 

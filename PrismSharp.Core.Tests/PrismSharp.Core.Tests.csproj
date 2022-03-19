@@ -24,4 +24,12 @@
       <ProjectReference Include="..\PrismSharp.Core\PrismSharp.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="testcases\**" CopyToOutputDirectory="Always" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="testcases\clike" />
+    </ItemGroup>
+
 </Project>

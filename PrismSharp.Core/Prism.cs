@@ -4,6 +4,15 @@ public static class Prism
 {
     public static Token[] Tokenize(string text, Grammar grammar)
     {
+        var rest = grammar.Reset;
+        if (rest is not null) {
+            foreach (var kv in rest) {
+                grammar[kv.Key] = kv.Value;
+            }
+
+            grammar.Reset = null;
+        }
+
         var tokenList = new LinkedList<Token>();
 
         var head = new LinkedListNode<Token>(null!);
@@ -20,10 +29,11 @@ public static class Prism
     private static void MatchGrammar(string text, LinkedList<Token> tokenList, Grammar grammar,
         LinkedListNode<Token> startNode, int startPos, RematchOptions? rematch = null)
     {
-        foreach (var kv in grammar.GrammarTokenMap)
+        foreach (var kv in grammar)
         {
             var token = kv.Key;
             var patterns = kv.Value;
+
             for (var j = 0; j < patterns.Length; ++j)
             {
                 if (rematch?.Cause == token + ',' + j)
@@ -123,7 +133,7 @@ public static class Prism
 
                     var removeFrom = currentNode.Previous!;
 
-                    if (!string.IsNullOrEmpty(before))
+                    if (before.Length > 0)
                     {
                         removeFrom = AddAfter(tokenList, removeFrom, new StringToken(before));
                         pos += before.Length;
@@ -137,7 +147,7 @@ public static class Prism
 
                     currentNode = AddAfter(tokenList, removeFrom, wrapped);
 
-                    if (!string.IsNullOrEmpty(after))
+                    if (after.Length > 0)
                         AddAfter(tokenList, currentNode, new StringToken(after));
 
                     if (removeCount > 1)

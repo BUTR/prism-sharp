@@ -57,54 +57,116 @@ public class JavaScript : IGrammarDefinition
             new(@"--|\+\+|\*\*=?|=>|&&=?|\|\|=?|[!=]==|<<=?|>>>?=?|[-+*/%&|^!=<>]=?|\.{3}|\?\?=?|\?\.?|[~:]")
         };
 
-        javascriptGrammar["class-name"][0].Pattern = new Regex(@"(\b(?:class|extends|implements|instanceof|interface|new)\s+)[\w.\\]+");
+        javascriptGrammar["class-name"][0].Pattern =
+            new Regex(@"(\b(?:class|extends|implements|instanceof|interface|new)\s+)[\w.\\]+", RegexOptions.Compiled);
 
-        javascriptGrammar["regex"] = new GrammarToken[]
+        javascriptGrammar.InsertBefore("keyword", new Grammar
         {
-            new(
-                @"((?:^|[^$\w\xA0-\uFFFF.""'\])\s]|\b(?:return|yield))\s*)\/(?:\[(?:[^\]\\\r\n]|\\.)*\]|\\.|[^/\\\[\r\n])+\/[dgimyus]{0,7}(?=(?:\s|\/\*(?:[^*]|\*(?!\/))*\*\/)*(?:$|[\r\n,.;:})\]]|\/\/))",
-                true,
-                true,
-                inside: new Grammar
-                {
-                    ["regex-source"] = new GrammarToken[]
+            ["regex"] = new GrammarToken[]
+            {
+                new(
+                    @"((?:^|[^$\w\xA0-\uFFFF.""'\])\s]|\b(?:return|yield))\s*)\/(?:\[(?:[^\]\\\r\n]|\\.)*\]|\\.|[^/\\\[\r\n])+\/[dgimyus]{0,7}(?=(?:\s|\/\*(?:[^*]|\*(?!\/))*\*\/)*(?:$|[\r\n,.;:})\]]|\/\/))",
+                    true,
+                    true,
+                    inside: new Grammar
                     {
-                        new(@"^(\/)[\s\S]+(?=\/[a-z]*$)",
-                            true,
-                            alias: new[] { "language-regex" },
-                            inside: regexGrammar)
-                    },
-                    ["regex-delimiter"] = new GrammarToken[] { new(@"^\/|\/$") },
-                    ["regex-flags"] = new GrammarToken[] { new(@"^[a-z]+$") }
-                })
-        };
+                        ["regex-source"] = new GrammarToken[]
+                        {
+                            new(@"^(\/)[\s\S]+(?=\/[a-z]*$)",
+                                true,
+                                alias: new[] { "language-regex" },
+                                inside: regexGrammar)
+                        },
+                        ["regex-delimiter"] = new GrammarToken[] { new(@"^\/|\/$") },
+                        ["regex-flags"] = new GrammarToken[] { new(@"^[a-z]+$") }
+                    })
+            },
 
-        // This must be declared before keyword because we use "function" inside the look-forward
-        javascriptGrammar["function-variable"] = new GrammarToken[]
+            // This must be declared before keyword because we use "function" inside the look-forward
+            ["function-variable"] = new GrammarToken[]
+            {
+                new(
+                    @"#?(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*(?=\s*[=:]\s*(?:async\s*)?(?:\bfunction\b|(?:\((?:[^()]|\([^()]*\))*\)|(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*)\s*=>))",
+                    alias: new[] { "function" })
+            },
+            ["parameter"] = new GrammarToken[]
+            {
+                new(
+                    @"(function(?:\s+(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*)?\s*\(\s*)(?!\s)(?:[^()\s]|\s+(?![\s)])|\([^()]*\))+(?=\s*\))",
+                    true, inside: javascriptGrammar),
+                new(
+                    new Regex(@"(^|[^$\w\xA0-\uFFFF])(?!\s)[_$a-z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*(?=\s*=>)",
+                        RegexOptions.Compiled | RegexOptions.IgnoreCase),
+                    true, inside: javascriptGrammar),
+                new(@"(\(\s*)(?!\s)(?:[^()\s]|\s+(?![\s)])|\([^()]*\))+(?=\s*\)\s*=>)",
+                    true, inside: javascriptGrammar),
+                new(
+                    @"((?:\b|\s|^)(?!(?:as|async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|public|return|set|static|super|switch|this|throw|try|typeof|undefined|var|void|while|with|yield)(?![$\w\xA0-\uFFFF]))(?:(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*\s*)\(\s*|\]\s*\(\s*)(?!\s)(?:[^()\s]|\s+(?![\s)])|\([^()]*\))+(?=\s*\)\s*\{)",
+                    true, inside: javascriptGrammar),
+            },
+            ["constant"] = new GrammarToken[]
+            {
+                new(@"\b[A-Z](?:[A-Z_]|\dx?)*\b")
+            }
+        });
+
+        javascriptGrammar.InsertBefore("string", new Grammar
         {
-            new(
-                @"#?(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*(?=\s*[=:]\s*(?:async\s*)?(?:\bfunction\b|(?:\((?:[^()]|\([^()]*\))*\)|(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*)\s*=>))",
-                alias: new[] { "function" })
-        };
-        javascriptGrammar["parameter"] = new GrammarToken[]
+            ["hashbang"] = new GrammarToken[]
+            {
+                new(@"^#!.*", greedy: true, alias: new[] { "comment" })
+            },
+            ["template-string"] = new GrammarToken[]
+            {
+                new(@"`(?:\\[\s\S]|\$\{(?:[^{}]|\{(?:[^{}]|\{[^}]*\})*\})+\}|(?!\$\{)[^\\`])*`",
+                    greedy: true,
+                    inside: new Grammar
+                    {
+                        ["template-punctuation"] = new GrammarToken[]
+                        {
+                            new(@"^`|`$", alias: new[] { "string" })
+                        },
+                        ["interpolation"] = new GrammarToken[]
+                        {
+                            new(@"((?:^|[^\\])(?:\\{2})*)\$\{(?:[^{}]|\{(?:[^{}]|\{[^}]*\})*\})+\}",
+                                true,
+                                inside: new Grammar
+                                {
+                                    ["interpolation-punctuation"] = new GrammarToken[]
+                                    {
+                                        new(@"^\$\{|\}$", alias: new[] { "punctuation" })
+                                    },
+                                    Reset = javascriptGrammar
+                                })
+                        },
+                        ["string"] = new GrammarToken[]
+                        {
+                            new(@"[\s\S]+")
+                        }
+                    })
+            },
+            ["string-property"] = new GrammarToken[]
+            {
+                new(
+                    new Regex(@"((?:^|[,{])[ \t]*)([""'])(?:\\(?:\r\n|[\s\S])|(?!\2)[^\\\r\n])*\2(?=\s*:)",
+                        RegexOptions.Compiled | RegexOptions.Multiline),
+                    true,
+                    true,
+                    new[] { "property" })
+            },
+        });
+
+        javascriptGrammar.InsertBefore("operator", new Grammar
         {
-            new(
-                @"(function(?:\s+(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*)?\s*\(\s*)(?!\s)(?:[^()\s]|\s+(?![\s)])|\([^()]*\))+(?=\s*\))",
-                true, inside: javascriptGrammar),
-            new(
-                new Regex(@"(^|[^$\w\xA0-\uFFFF])(?!\s)[_$a-z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*(?=\s*=>)",
-                    RegexOptions.IgnoreCase),
-                true, inside: javascriptGrammar),
-            new(@"(\(\s*)(?!\s)(?:[^()\s]|\s+(?![\s)])|\([^()]*\))+(?=\s*\)\s*=>)",
-                true, inside: javascriptGrammar),
-            new(
-                @"((?:\b|\s|^)(?!(?:as|async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|public|return|set|static|super|switch|this|throw|try|typeof|undefined|var|void|while|with|yield)(?![$\w\xA0-\uFFFF]))(?:(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*\s*)\(\s*|\]\s*\(\s*)(?!\s)(?:[^()\s]|\s+(?![\s)])|\([^()]*\))+(?=\s*\)\s*\{)",
-                true, inside: javascriptGrammar),
-        };
-        javascriptGrammar["constant"] = new GrammarToken[]
-        {
-            new(@"\b[A-Z](?:[A-Z_]|\dx?)*\b")
-        };
+            ["literal-property"] = new GrammarToken[]
+            {
+                new(
+                    new Regex(@"((?:^|[,{])[ \t]*)(?!\s)[_$a-zA-Z\xA0-\uFFFF](?:(?!\s)[$\w\xA0-\uFFFF])*(?=\s*:)",
+                        RegexOptions.Compiled | RegexOptions.Multiline),
+                    true,
+                    alias: new[] { "property" })
+            }
+        });
 
         return javascriptGrammar;
     }

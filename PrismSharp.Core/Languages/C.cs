@@ -33,8 +33,8 @@ public class C : IGrammarDefinition
                     ["string"] = new GrammarToken[]
                     {
                         // highlight the path of the include statement as a string
-                        new(@"^(#\s*include\s*)<[^>]+>", true)
-                    },
+                        new(@"^(#\s*include\s*)<[^>]+>", true),
+                    }.Concat(extendCLikeGrammar["string"]).ToArray(),
                     ["char"] = extendCLikeGrammar["char"],
                     ["comment"] = extendCLikeGrammar["comment"],
                     ["macro-name"] = new GrammarToken[]
@@ -89,7 +89,7 @@ public class C : IGrammarDefinition
             new(@">>=?|<<=?|->|([-+&|:])\1|[?:~]|[-+*/%&|^!=<>]=?")
         };
 
-        extendCLikeGrammar.GrammarTokenMap.Remove("boolean");
+        extendCLikeGrammar.Remove("boolean");
         return extendCLikeGrammar;
     }
 }
