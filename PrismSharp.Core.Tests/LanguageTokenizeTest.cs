@@ -51,7 +51,7 @@ public class LanguageTokenizeTest
     [InlineData("operator_feature")]
     [InlineData("private_fields_feature")]
     [InlineData("property_feature")]
-    [InlineData("regex_feature")]
+    [InlineData("regex_feature")] // TODO: test failed
     [InlineData("spread_and_keyword_feature")]
     [InlineData("supposed-classes_feature")]
     [InlineData("supposed-function_feature")]
