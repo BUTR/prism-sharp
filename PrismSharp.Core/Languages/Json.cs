@@ -8,6 +8,7 @@ public class Json : IGrammarDefinition
 {
     public Grammar Define()
     {
+        // https://www.json.org/json-en.html
         return new Grammar
         {
             ["property"] = new GrammarToken[]
