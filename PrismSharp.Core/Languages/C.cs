@@ -24,7 +24,7 @@ public class C : IGrammarDefinition
         {
             new(
                 new Regex(@"(^[\t ]*)#\s*[a-z](?:[^\r\n\\/]|\/(?!\*)|\/\*(?:[^*]|\*(?!\/))*\*\/|\\(?:\r\n|[\s\S]))*",
-                    RegexOptions.IgnoreCase | RegexOptions.Multiline),
+                    RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline),
                 true,
                 true,
                 new[] { "property" },
@@ -39,8 +39,8 @@ public class C : IGrammarDefinition
                     ["comment"] = extendCLikeGrammar["comment"],
                     ["macro-name"] = new GrammarToken[]
                     {
-                        new(new Regex(@"(^#\s*define\s+)\w+\b(?!\()", RegexOptions.IgnoreCase), true),
-                        new(new Regex(@"(^#\s*define\s+)\w+\b(?=\()", RegexOptions.IgnoreCase), true,
+                        new(new Regex(@"(^#\s*define\s+)\w+\b(?!\()", RegexOptions.Compiled | RegexOptions.IgnoreCase), true),
+                        new(new Regex(@"(^#\s*define\s+)\w+\b(?=\()", RegexOptions.Compiled | RegexOptions.IgnoreCase), true,
                             alias: new[] { "function" }),
                     },
                     ["directive"] = new GrammarToken[]
@@ -78,7 +78,7 @@ public class C : IGrammarDefinition
 
         extendCLikeGrammar["function"] = new GrammarToken[]
         {
-            new(new Regex(@"\b[a-z_]\w*(?=\s*\()", RegexOptions.IgnoreCase))
+            new(new Regex(@"\b[a-z_]\w*(?=\s*\()", RegexOptions.Compiled | RegexOptions.IgnoreCase))
         };
         extendCLikeGrammar["number"] = new GrammarToken[]
         {
