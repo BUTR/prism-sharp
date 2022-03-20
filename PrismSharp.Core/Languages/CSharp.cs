@@ -273,7 +273,7 @@ public class CSharp : IGrammarDefinition
 
 
         // string interpolation
-        var formatString = @":[^}\r\n]+";
+        const string formatString = @":[^}\r\n]+";
         // multi line
         var mInterpolationRound =
             Nested(Replace(@"[^""'/()]|<<0>>|\(<<self>>*\)", new[] { regularStringCharacterOrComment }), 2);
@@ -345,7 +345,7 @@ public class CSharp : IGrammarDefinition
     // keywords
     private static string KeywordsToPattern(string words)
     {
-        return "\\b(?:" + words.Trim().Replace(" ", "|") + ")\\b";
+        return $"\\b(?:{words.Trim().Replace(" ", "|")})\\b";
     }
 
     /// <summary>
@@ -366,7 +366,7 @@ public class CSharp : IGrammarDefinition
         return selfRegex.Replace(pattern, @"[^\\s\\S]");
     }
 
-    private static Regex Re(string pattern, string[] replacements, RegexOptions flags = RegexOptions.Compiled)
+    private static Regex Re(string pattern, IReadOnlyList<string> replacements, RegexOptions flags = RegexOptions.Compiled)
     {
         return new Regex(Replace(pattern, replacements), flags);
     }
@@ -381,7 +381,7 @@ public class CSharp : IGrammarDefinition
     /// <param name="pattern"></param>
     /// <param name="replacements"></param>
     /// <returns></returns>
-    private static string Replace(string pattern, string[] replacements)
+    private static string Replace(string pattern, IReadOnlyList<string> replacements)
     {
         var evaluator = new MatchEvaluator(match =>
         {
