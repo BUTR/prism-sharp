@@ -11,9 +11,9 @@ public class GrammarToken
     /// The regular expression of the token.
     /// </summary>
     public Regex Pattern { get; set; }
-    public bool Lookbehind { get; private set; }
-    public bool Greedy { get; private set; }
-    public string[] Alias { get; private set; }
+    public bool Lookbehind { get; }
+    public bool Greedy { get; }
+    public string[] Alias { get; }
     public Grammar? Inside { get; set; }
 
 
