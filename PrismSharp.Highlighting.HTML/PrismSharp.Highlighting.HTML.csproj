@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <AssemblyName>PrismSharp.Highlighting.HTML</AssemblyName>
-        <Version>0.1.0-build.2</Version>
+        <Version>0.1.1-build.1</Version>
         <Description>Hightlighting code to HTML, a porting of PrismJS to C# or .NET.</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <ImplicitUsings>enable</ImplicitUsings>
