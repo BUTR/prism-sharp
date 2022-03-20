@@ -2,11 +2,13 @@ using PrismSharp.Core.Languages;
 
 namespace PrismSharp.Core;
 
-public class LanguageGrammars
+// TODO: maybe the class could be created by `source-generators`
+public static class LanguageGrammars
 {
     public static Grammar C => new C().Define();
     public static Grammar CLike => new CLike().Define();
     public static Grammar CSharp => new CSharp().Define();
+    public static Grammar Cs => CSharp;
     public static Grammar JavaScript => new JavaScript().Define();
     public static Grammar Js => JavaScript;
     public static Grammar RegExp => new RegExp().Define();
