@@ -28,4 +28,6 @@ public static class LanguageGrammars
     public static Grammar WebManifest => Json;
     public static Grammar PowerShell = new PowerShell().Define();
     public static Grammar Ps1 => PowerShell;
+    public static Grammar Yaml => new Yaml().Define();
+    public static Grammar Yml => Yaml;
 }

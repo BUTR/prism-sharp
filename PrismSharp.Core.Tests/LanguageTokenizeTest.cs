@@ -188,4 +188,23 @@ public class LanguageTokenizeTest
         var testFile = $"./testcases/powershell/{testCase}.test";
         TestHelper.RunTestCaseFromFile(LanguageGrammars.PowerShell, testFile);
     }
+
+    [Theory]
+    [InlineData("anchor_and_alias_feature")]
+    [InlineData("boolean_feature")]
+    [InlineData("comment_feature")]
+    [InlineData("datetime_feature")]
+    [InlineData("directive_feature")]
+    [InlineData("important_feature")]
+    [InlineData("key_feature")]
+    [InlineData("null_feature")]
+    [InlineData("number_feature")]
+    [InlineData("scalar_feature")]
+    [InlineData("string_feature")]
+    [InlineData("tag_feature")]
+    public void test_Yaml_features_ok(string testCase)
+    {
+        var testFile = $"./testcases/yaml/{testCase}.test";
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.Yaml, testFile);
+    }
 }
