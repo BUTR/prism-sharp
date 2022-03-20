@@ -172,4 +172,20 @@ public class LanguageTokenizeTest
         var testFile = $"./testcases/json/{testCase}.test";
         TestHelper.RunTestCaseFromFile(LanguageGrammars.Json, testFile);
     }
+
+    [Theory]
+    [InlineData("boolean_feature")]
+    [InlineData("comment_feature")]
+    [InlineData("function_feature")]
+    [InlineData("keyword_feature")]
+    [InlineData("namespace_feature")]
+    [InlineData("operator_feature")]
+    [InlineData("string_feature")]
+    [InlineData("variable_feature")]
+    [InlineData("issue1407")]
+    public void test_PowerShell_features_ok(string testCase)
+    {
+        var testFile = $"./testcases/powershell/{testCase}.test";
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.PowerShell, testFile);
+    }
 }

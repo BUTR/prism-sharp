@@ -26,4 +26,6 @@ public static class LanguageGrammars
     public static Grammar Sql => new Sql().Define();
     public static Grammar Json => new Json().Define();
     public static Grammar WebManifest => Json;
+    public static Grammar PowerShell = new PowerShell().Define();
+    public static Grammar Ps1 => PowerShell;
 }
