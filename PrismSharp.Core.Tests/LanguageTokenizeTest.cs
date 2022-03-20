@@ -15,10 +15,10 @@ public class LanguageTokenizeTest
     [InlineData("operator_feature")]
     [InlineData("string_feature")]
     [InlineData("issue1340")]
-    public async Task test_CLike_features_ok(string testCase)
+    public void test_CLike_features_ok(string testCase)
     {
         var testFile = $"./testcases/clike/{testCase}.test";
-        await TestHelper.RunTestCaseFromFileAsync(LanguageGrammars.CLike, testFile);
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.CLike, testFile);
     }
 
     [Theory]
@@ -32,10 +32,54 @@ public class LanguageTokenizeTest
     [InlineData("number_feature")]
     [InlineData("operator_feature")]
     [InlineData("string_feature")]
-    public async Task test_C_features_ok(string testCase)
+    public void test_C_features_ok(string testCase)
     {
         var testFile = $"./testcases/c/{testCase}.test";
-        await TestHelper.RunTestCaseFromFileAsync(LanguageGrammars.C, testFile);
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.C, testFile);
+    }
+
+    [Theory]
+    [InlineData("attribute_feature")]
+    [InlineData("char_feature")]
+    [InlineData("class-name-declaration_feature")]
+    [InlineData("class-name-variables-parameters_feature")]
+    [InlineData("constructor-invocation_feature")]
+    [InlineData("for_feature")]
+    [InlineData("generic-constraint_feature")]
+    [InlineData("generic_feature")]
+    [InlineData("interpolation-string_feature")]
+    [InlineData("keyword_feature")]
+    [InlineData("named-parameter_feature")]
+    [InlineData("namespace_feature")]
+    [InlineData("number_feature")]
+    [InlineData("operator_feature")]
+    [InlineData("preprocessor_feature")]
+    [InlineData("punctuation_feature")]
+    [InlineData("range_feature")]
+    [InlineData("return-type_feature")]
+    [InlineData("string_feature")]
+    [InlineData("switch_feature")]
+    [InlineData("type-expression_feature")]
+    [InlineData("type-list_feature")]
+    [InlineData("using-directive_feature")]
+    [InlineData("issue1091")]
+    [InlineData("issue1365")]
+    [InlineData("issue1371")]
+    [InlineData("issue2968")]
+    [InlineData("issue806")]
+    public void test_CSharp_features_ok(string testCase)
+    {
+        var testFile = $"./testcases/csharp/{testCase}.test";
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.CSharp, testFile);
+    }
+
+    [Theory]
+    [InlineData("comment_feature")]
+    [InlineData("page-directive_feature")] // TODO: test failed
+    public void test_AspNet_features_ok(string testCase)
+    {
+        var testFile = $"./testcases/aspnet/{testCase}.test";
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.AspNet, testFile);
     }
 
     [Theory]
@@ -58,10 +102,10 @@ public class LanguageTokenizeTest
     [InlineData("template-string_feature")]
     [InlineData("try-catch_feature")]
     [InlineData("variable_feature")]
-    public async Task test_JavaScript_features_ok(string testCase)
+    public void test_JavaScript_features_ok(string testCase)
     {
         var testFile = $"./testcases/javascript/{testCase}.test";
-        await TestHelper.RunTestCaseFromFileAsync(LanguageGrammars.JavaScript, testFile);
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.JavaScript, testFile);
     }
 
     [Theory]
@@ -74,10 +118,10 @@ public class LanguageTokenizeTest
     [InlineData("tag_feature")]
     [InlineData("issue585")]
     [InlineData("issue888")]
-    public async Task test_Markup_features_ok(string testCase)
+    public void test_Markup_features_ok(string testCase)
     {
         var testFile = $"./testcases/markup/{testCase}.test";
-        await TestHelper.RunTestCaseFromFileAsync(LanguageGrammars.Markup, testFile);
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.Markup, testFile);
     }
 
     [Theory]
@@ -89,10 +133,10 @@ public class LanguageTokenizeTest
     [InlineData("group_feature")]
     [InlineData("quantifier_feature")]
     [InlineData("range_feature")]
-    public async Task test_RegExp_features_ok(string testCase)
+    public void test_RegExp_features_ok(string testCase)
     {
         var testFile = $"./testcases/regex/{testCase}.test";
-        await TestHelper.RunTestCaseFromFileAsync(LanguageGrammars.RegExp, testFile);
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.RegExp, testFile);
     }
 
     [Theory]
@@ -106,9 +150,9 @@ public class LanguageTokenizeTest
     [InlineData("string_feature")]
     [InlineData("variable_feature")]
     [InlineData("issue3140")]
-    public async Task test_Sql_features_ok(string testCase)
+    public void test_Sql_features_ok(string testCase)
     {
         var testFile = $"./testcases/sql/{testCase}.test";
-        await TestHelper.RunTestCaseFromFileAsync(LanguageGrammars.Sql, testFile);
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.Sql, testFile);
     }
 }

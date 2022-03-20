@@ -9,6 +9,9 @@ public static class LanguageGrammars
     public static Grammar CLike => new CLike().Define();
     public static Grammar CSharp => new CSharp().Define();
     public static Grammar Cs => CSharp;
+    public static Grammar DotNet => CSharp;
+    public static Grammar AspNet => new AspNet().Define();
+    public static Grammar Aspx => AspNet;
     public static Grammar JavaScript => new JavaScript().Define();
     public static Grammar Js => JavaScript;
     public static Grammar RegExp => new RegExp().Define();

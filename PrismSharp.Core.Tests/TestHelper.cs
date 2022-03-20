@@ -12,9 +12,9 @@ namespace PrismSharp.Core.Tests;
 
 public static class TestHelper
 {
-    public static async Task RunTestCaseFromFileAsync(Grammar testGrammar, string filePath)
+    public static void RunTestCaseFromFile(Grammar testGrammar, string filePath)
     {
-        var text = await File.ReadAllTextAsync(filePath);
+        var text = File.ReadAllText(filePath);
         var testCase = ParseTestCaseFile(text);
 
         if (string.IsNullOrEmpty(testCase.Expected))
@@ -149,6 +149,7 @@ public static class TestHelper
 
     private static bool IsBlankStringToken(Token token)
     {
-        return token is StringToken stringToken && string.IsNullOrWhiteSpace(stringToken.Content);
+        return !token.IsMatchedToken() && token is StringToken stringToken &&
+               string.IsNullOrWhiteSpace(stringToken.Content);
     }
 }
