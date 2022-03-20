@@ -24,4 +24,6 @@ public static class LanguageGrammars
     public static Grammar Atom => Xml;
     public static Grammar Rss => Xml;
     public static Grammar Sql => new Sql().Define();
+    public static Grammar Json => new Json().Define();
+    public static Grammar WebManifest => Json;
 }

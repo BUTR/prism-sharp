@@ -3,6 +3,7 @@ using Xunit;
 
 namespace PrismSharp.Core.Tests;
 
+// TODO: create the class by source-generator
 public class LanguageTokenizeTest
 {
     [Theory]
@@ -154,5 +155,21 @@ public class LanguageTokenizeTest
     {
         var testFile = $"./testcases/sql/{testCase}.test";
         TestHelper.RunTestCaseFromFile(LanguageGrammars.Sql, testFile);
+    }
+
+    [Theory]
+    [InlineData("boolean_feature")]
+    [InlineData("comment_feature")]
+    [InlineData("null_feature")]
+    [InlineData("number_feature")]
+    [InlineData("operator_feature")]
+    [InlineData("property_feature")]
+    [InlineData("punctuation_feature")]
+    [InlineData("string_feature")]
+    [InlineData("issue1852")]
+    public void test_Json_features_ok(string testCase)
+    {
+        var testFile = $"./testcases/json/{testCase}.test";
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.Json, testFile);
     }
 }

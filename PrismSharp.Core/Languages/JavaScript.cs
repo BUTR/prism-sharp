@@ -2,6 +2,8 @@ using System.Text.RegularExpressions;
 
 namespace PrismSharp.Core.Languages;
 
+// From https://github.com/PrismJS/prism/blob/master/components/prism-javascript.js
+
 public class JavaScript : IGrammarDefinition
 {
     public Grammar Define()
