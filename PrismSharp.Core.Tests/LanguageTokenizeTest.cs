@@ -75,10 +75,18 @@ public class LanguageTokenizeTest
 
     [Theory]
     [InlineData("comment_feature")]
-    [InlineData("page-directive_feature")] // TODO: test failed
+    [InlineData("page-directive_feature")]
     public void test_AspNet_features_ok(string testCase)
     {
         var testFile = $"./testcases/aspnet/{testCase}.test";
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.AspNet, testFile);
+    }
+
+    [Theory]
+    [InlineData("directive_feature")]
+    public void test_CSharp_AspNet_features_ok(string testCase)
+    {
+        var testFile = $"./testcases/csharp+aspnet/{testCase}.test";
         TestHelper.RunTestCaseFromFile(LanguageGrammars.AspNet, testFile);
     }
 
@@ -102,6 +110,12 @@ public class LanguageTokenizeTest
     [InlineData("template-string_feature")]
     [InlineData("try-catch_feature")]
     [InlineData("variable_feature")]
+    [InlineData("issue1337")]
+    [InlineData("issue1340")]
+    [InlineData("issue1397")]
+    [InlineData("issue1526")]
+    [InlineData("issue1807")]
+    [InlineData("issue2694")]
     public void test_JavaScript_features_ok(string testCase)
     {
         var testFile = $"./testcases/javascript/{testCase}.test";
