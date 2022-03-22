@@ -102,6 +102,102 @@ public class Markup : IGrammarDefinition
         markupGrammar["tag"][0].Inside!["attr-value"][0].Inside!["entity"] = markupGrammar["entity"];
         markupGrammar["doctype"][0].Inside!["internal-subset"][0].Inside = markupGrammar;
 
+
+
+
+        AddInlined(markupGrammar, "script", new JavaScript().Define(), "javascript");
+
+        // add attribute support for all DOM events.
+        // https://developer.mozilla.org/en-US/docs/Web/Events#Standard_events
+        AddAttribute(markupGrammar,
+            @"on(?:abort|blur|change|click|composition(?:end|start|update)|dblclick|error|focus(?:in|out)?|key(?:down|up)|load|mouse(?:down|enter|leave|move|out|over|up)|reset|resize|scroll|select|slotchange|submit|unload|wheel)",
+            new JavaScript().Define(), "javascript");
+
+        // script runat="server" contains csharp, not javascript
+        markupGrammar.InsertBefore("script", new Grammar
+        {
+            ["asp-script"] = new GrammarToken[]
+            {
+                new(
+                    new Regex(@"(<script(?=.*runat=['""]?server\b)[^>]*>)[\s\S]*?(?=<\/script>)",
+                        RegexOptions.Compiled | RegexOptions.IgnoreCase),
+                    true, alias: new[] { "asp", "script" }, inside: new CSharp().Define())
+            }
+        });
+
+        // TODO: css
+
         return markupGrammar;
+    }
+
+    private static void AddInlined(Grammar grammar, string tagName, Grammar langGrammar, string lang)
+    {
+        var includedCdataInside = new Grammar
+        {
+            [$"language-{lang}"] = new GrammarToken[]
+            {
+                new(new Regex(@"(^<!\[CDATA\[)[\s\S]+?(?=\]\]>$)", RegexOptions.Compiled | RegexOptions.IgnoreCase),
+                    true,
+                    inside: langGrammar)
+            },
+            ["cdata"] = new GrammarToken[]
+                { new(new Regex(@"^<!\[CDATA\[|\]\]>$", RegexOptions.Compiled | RegexOptions.IgnoreCase)) }
+        };
+
+        var inside = new Grammar
+        {
+            ["included-cdata"] = new GrammarToken[]
+            {
+                new(new Regex(@"<!\[CDATA\[[\s\S]*?\]\]>", RegexOptions.Compiled | RegexOptions.IgnoreCase),
+                    inside: includedCdataInside)
+            },
+            [$"language-{lang}"] = new GrammarToken[]
+            {
+                new(@"[\s\S]+", inside: langGrammar)
+            }
+        };
+
+        var def = new Grammar
+        {
+            [tagName] = new GrammarToken[]
+            {
+                new(new Regex(@"(<__[^>]*>)(?:<!\[CDATA\[(?:[^\]]|\](?!\]>))*\]\]>|(?!<!\[CDATA\[)[\s\S])*?(?=<\/__>)"
+                    .Replace("__", tagName), RegexOptions.Compiled | RegexOptions.IgnoreCase),
+                true,
+                true,
+                inside: inside)
+            }
+        };
+
+        grammar.InsertBefore("cdata", def);
+    }
+
+    private static void AddAttribute(Grammar currentGrammar, string attrNamePattern, Grammar langGrammar, string lang)
+    {
+        var regex = new Regex(
+            $@"(^|[""'\s])(?:{attrNamePattern})\s*=\s*(?:""[^""]*""|'[^']*'|[^\s'"">=]+(?=[\s>]))",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        currentGrammar["tag"][0].Inside!["special-attr"] = currentGrammar["tag"][0].Inside!["special-attr"]
+            .Append(new GrammarToken(regex, true, inside: new Grammar
+            {
+                ["attr-name"] = new GrammarToken[]{new(@"^[^\s=]+")},
+                ["attr-value"] = new GrammarToken[]{new(@"=[\s\S]+",
+                    inside: new Grammar
+                    {
+                        ["value"] = new GrammarToken[]
+                        {
+                            new(@"(^=\s*([""']|(?![""'])))\S[\s\S]*(?=\2$)",
+                                true,
+                                alias: new []{lang, $"language-{lang}"},
+                                inside: langGrammar)
+                        },
+                        ["punctuation"] = new GrammarToken[]
+                        {
+                            new(@"^=", alias: new []{"attr-equals"}),
+                            new(@"""|'")
+                        }
+                    })},
+            })).ToArray();
     }
 }

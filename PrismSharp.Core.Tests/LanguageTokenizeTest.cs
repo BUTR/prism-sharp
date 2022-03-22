@@ -112,7 +112,6 @@ public class LanguageTokenizeTest
     [InlineData("cdata_feature")]
     [InlineData("comment_feature")]
     [InlineData("doctype_feature")]
-    [InlineData("entity_feature")]
     [InlineData("prolog_feature")]
     [InlineData("tag_attribute_feature")]
     [InlineData("tag_feature")]
@@ -121,6 +120,22 @@ public class LanguageTokenizeTest
     public void test_Markup_features_ok(string testCase)
     {
         var testFile = $"./testcases/markup/{testCase}.test";
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.Markup, testFile);
+    }
+
+    [Theory]
+    [InlineData("javascript_inclusion")]
+    public void test_Markup_inline_JavaScript_features_ok(string testCase)
+    {
+        var testFile = $"./testcases/markup!+javascript/{testCase}.test";
+        TestHelper.RunTestCaseFromFile(LanguageGrammars.Markup, testFile);
+    }
+
+    [Theory]
+    [InlineData("script_feature")]
+    public void test_Markup_inline_JavaScript_CSharp_AspNet_features_ok(string testCase)
+    {
+        var testFile = $"./testcases/markup+javascript+csharp+aspnet/{testCase}.test";
         TestHelper.RunTestCaseFromFile(LanguageGrammars.Markup, testFile);
     }
 
