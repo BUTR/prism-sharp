@@ -1,0 +1,3 @@
+[submodule "prismjs"]
+	path = prismjs
+	url = https://github.com/PrismJS/prism.git

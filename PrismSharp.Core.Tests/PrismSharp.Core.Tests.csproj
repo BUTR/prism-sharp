@@ -25,11 +25,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="testcases\**" CopyToOutputDirectory="Always" />
+      <None Include="..\prismjs\tests\languages\**\*.test">
+        <Link>testcases\%(RecursiveDir)/%(FileName)%(Extension)</Link>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="testcases\clike" />
-    </ItemGroup>
 
 </Project>
