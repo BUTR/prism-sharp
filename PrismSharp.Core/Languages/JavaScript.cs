@@ -67,7 +67,22 @@ public class JavaScript : IGrammarDefinition
             ["regex"] = new GrammarToken[]
             {
                 new(
-                    @"((?:^|[^$\w\xA0-\uFFFF.""'\])\s]|\b(?:return|yield))\s*)\/(?:\[(?:[^\]\\\r\n]|\\.)*\]|\\.|[^/\\\[\r\n])+\/[dgimyus]{0,7}(?=(?:\s|\/\*(?:[^*]|\*(?!\/))*\*\/)*(?:$|[\r\n,.;:})\]]|\/\/))",
+                    // lookbehind
+                    // eslint-disable-next-line regexp/no-dupe-characters-character-class
+                    @"((?:^|[^$\w\xA0-\uFFFF.""'\])\s]|\b(?:return|yield))\s*)" +
+                    // Regex pattern:
+                    // There are 2 regex patterns here. The RegExp set notation proposal added support for nested character
+                    // classes if the `v` flag is present. Unfortunately, nested CCs are both context-free and incompatible
+                    // with the only syntax, so we have to define 2 different regex patterns.
+                    @"\/" +
+                    @"(?:" +
+                    @"(?:\[(?:[^\]\\\r\n]|\\.)*\]|\\.|[^/\\\[\r\n])+\/[dgimyus]{0,7}" +
+                    @"|" +
+                    // `v` flag syntax. This supports 3 levels of nested character classes.
+                    @"(?:\[(?:[^[\]\\\r\n]|\\.|\[(?:[^[\]\\\r\n]|\\.|\[(?:[^[\]\\\r\n]|\\.)*\])*\])*\]|\\.|[^/\\\[\r\n])+\/[dgimyus]{0,7}v[dgimyus]{0,7}" +
+                    @")" +
+                    // lookahead
+                    @"(?=(?:\s|\/\*(?:[^*]|\*(?!\/))*\*\/)*(?:$|[\r\n,.;:})\]]|\/\/))",
                     true,
                     true,
                     inside: new Grammar
