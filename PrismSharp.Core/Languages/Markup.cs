@@ -103,15 +103,15 @@ public class Markup : IGrammarDefinition
         markupGrammar["doctype"][0].Inside!["internal-subset"][0].Inside = markupGrammar;
 
 
-
-
-        AddInlined(markupGrammar, "script", new JavaScript().Define(), "javascript");
+        // script for js
+        var jsGrammar = new JavaScript().Define();
+        AddInlined(markupGrammar, "script", jsGrammar, "javascript");
 
         // add attribute support for all DOM events.
         // https://developer.mozilla.org/en-US/docs/Web/Events#Standard_events
         AddAttribute(markupGrammar,
             @"on(?:abort|blur|change|click|composition(?:end|start|update)|dblclick|error|focus(?:in|out)?|key(?:down|up)|load|mouse(?:down|enter|leave|move|out|over|up)|reset|resize|scroll|select|slotchange|submit|unload|wheel)",
-            new JavaScript().Define(), "javascript");
+            jsGrammar, "javascript");
 
         // script runat="server" contains csharp, not javascript
         markupGrammar.InsertBefore("script", new Grammar
@@ -125,7 +125,10 @@ public class Markup : IGrammarDefinition
             }
         });
 
-        // TODO: css
+        // css style tag
+        var cssGrammar = new Css().Define();
+        AddInlined(markupGrammar, "style", cssGrammar, "css");
+        AddAttribute(markupGrammar, "style", cssGrammar, "css");
 
         return markupGrammar;
     }

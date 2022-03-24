@@ -70,19 +70,16 @@ public class LanguageTokenizeTest
     }
 
     [Theory]
-    [InlineData("javascript_inclusion")]
-    public void test_Markup_inline_JavaScript_features_ok(string testCase)
+    [InlineData("markup!+css")]
+    [InlineData("markup!+css+javascript")]
+    [InlineData("markup!+javascript")]
+    [InlineData("markup+javascript+csharp+aspnet")]
+    public void test_Markup_inline_Others_features_ok(string testCase)
     {
-        var testFile = $"./testcases/markup!+javascript/{testCase}.test";
-        TestHelper.RunTestCaseFromFile(LanguageGrammars.Markup, testFile);
-    }
-
-    [Theory]
-    [InlineData("script_feature")]
-    public void test_Markup_inline_JavaScript_CSharp_AspNet_features_ok(string testCase)
-    {
-        var testFile = $"./testcases/markup+javascript+csharp+aspnet/{testCase}.test";
-        TestHelper.RunTestCaseFromFile(LanguageGrammars.Markup, testFile);
+        var testFiles = Directory.GetFiles($"./testcases/{testCase}/", "*.test")
+            .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
+        Assert.NotEmpty(testFiles);
+        Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Markup, testFile));
     }
 
     [Fact]
@@ -128,5 +125,15 @@ public class LanguageTokenizeTest
             .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
         Assert.NotEmpty(testFiles);
         Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Yaml, testFile));
+    }
+
+    [Theory]
+    [InlineData("css")]
+    public void test_Css_all_features_ok(string testCase)
+    {
+        var testFiles = Directory.GetFiles($"./testcases/{testCase}/", "*.test")
+            .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
+        Assert.NotEmpty(testFiles);
+        Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Css, testFile));
     }
 }
