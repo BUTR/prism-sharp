@@ -4,7 +4,7 @@ const prism = require("./prismjs/prism");
 
 const { languages, util } = prism;
 
-const csharpCode = transform("markup");
+const csharpCode = transform("js");
 console.log(csharpCode);
 
 function transform(lang) {
@@ -14,8 +14,7 @@ function transform(lang) {
       .map((s) => s[0].toUpperCase() + (s.length > 1 ? s.slice(1) : ""))
       .join("") + "GrammarDefinition";
 
-  var outString = `
-using System.Text.RegularExpressions;
+  var outString = `using System.Text.RegularExpressions;
 
 namespace PrismSharp.Core.Languages;  
 
@@ -30,48 +29,29 @@ public class ${className} : IGrammarDefinition
 
   var currentLang = languages[lang];
   var visited = {};
+  // console.log(currentLang);
   var id = util.objId(currentLang);
   visited[id] = `grammar`;
 
   for (const key in currentLang) {
     var val = currentLang[key];
+    var valType = util.type(val);
+    var curVisitPath = `grammar["${key}"]`;
 
-    if (util.type(val) === "RegExp") {
+    if (valType === "RegExp" || valType === "Object") {
       outString += `
-      grammar["${key}"] = new GrammarToken[]
+      ${curVisitPath} = new GrammarToken[]
       {
-        ${toGrammarToken(
-          val,
-          false,
-          false,
-          [],
-          null,
-          visited,
-          `grammar["${key}"][0]`
-        )}
+          ${innerTransform([val], curVisitPath, visited)}
       };`;
-    } else if (util.type(val) == "Object") {
-      id = util.objId(val);
-      if (visited[id]) {
-        outString += `grammar["${key}"] = ${visited[id]};`;
-        continue;
-      }
-      visited[id] = `grammar["${key}"]`;
+    } else if (valType === "Array") {
       outString += `
-      grammar["${key}"] = new GrammarToken[]
+      ${curVisitPath} = new GrammarToken[]
       {
-        ${toGrammarToken(
-          val.pattern,
-          val.lookbehind,
-          val.greedy,
-          val.alias,
-          val.inside,
-          visited,
-          `grammar["${key}"][0]`
-        )}
+          ${innerTransform(val, curVisitPath, visited)}
       };`;
-    } else if (util.type(val) === "Array") {
-      // TODO
+    } else {
+      throw new Error(`not suported type for '${util.type(val)}'`);
     }
   }
 
@@ -82,6 +62,40 @@ public class ${className} : IGrammarDefinition
 }`;
 
   // console.log(visited);
+
+  return outString;
+}
+
+function innerTransform(items, preVisitPath, visited) {
+  var outString = "";
+
+  for (var i = 0, len = items.length; i < len; ++i) {
+    var val = items[i];
+    var valType = util.type(val);
+
+    var id = util.objId(val);
+    if (visited[id]) {
+      outString += `
+        ${visited[id]},`;
+      continue;
+    }
+    visited[id] = `${preVisitPath}[${i}]`;
+
+    if (valType === "RegExp" || valType === "Object") {
+      outString += `
+        ${toGrammarToken(
+          val.pattern || val,
+          val.lookbehind || false,
+          val.greedy || false,
+          val.alias || [],
+          val.inside || null,
+          visited,
+          visited[id]
+        )},`;
+    } else {
+      throw new Error(`not suported type for '${valType}'`);
+    }
+  }
 
   return outString;
 }
@@ -118,8 +132,9 @@ function toGrammarToken(
     csharpRegexOptions += " | RegexOptions.IgnoreCase";
   }
   if (flags.includes("m")) {
-    pattern = pattern.replace(/\$/g, "\\r?$");
-    csharpRegexOptions += " | RegexOptions.MultiLine";
+    // TODO: fix
+    // pattern = pattern.replace(/\$/g, "\\r?$");
+    csharpRegexOptions += " | RegexOptions.Multiline";
   }
 
   var code = `new(new Regex(@"${pattern.replace(
@@ -145,28 +160,16 @@ function toGrammarToken(
   return code;
 }
 
-function transformInside(inside, visited, objVisitCode) {
+function transformInside(inside, visited, preVisitPath) {
   var code = `new Grammar{
     `;
 
   for (const key in inside) {
     var val = inside[key];
+    var valType = util.type(val);
+    var curVisitPath = `${preVisitPath}["${key}"]`;
 
-    if (util.type(val) === "RegExp") {
-      code += `
-        ["${key}"] = new GrammarToken[]
-        {
-          ${toGrammarToken(
-            val,
-            false,
-            false,
-            [],
-            null,
-            visited,
-            `${objVisitCode}["${key}"][0]`
-          )}
-        },`;
-    } else if (util.type(val) == "Object") {
+    if (valType === "RegExp" || valType === "Object") {
       id = util.objId(val);
       if (visited[id]) {
         if (key === "rest") {
@@ -178,24 +181,65 @@ function transformInside(inside, visited, objVisitCode) {
         }
         continue;
       }
-
-      visited[id] = `${objVisitCode}["${key}"]`;
       code += `
-        ["${key}"] = new GrammarToken[]
-        {
-          ${toGrammarToken(
-            val.pattern,
-            val.lookbehind,
-            val.greedy,
-            val.alias,
-            val.inside,
-            visited,
-            `${objVisitCode}["${key}"][0]`
-          )}
-        },`;
-    } else if (util.type(val) === "Array") {
-      // TODO
+      ["${key}"] = new GrammarToken[]
+      {
+          ${innerTransform([val], curVisitPath, visited)}
+      },`;
+    } else if (valType === "Array") {
+      code += `
+      ["${key}"] = new GrammarToken[]
+      {
+          ${innerTransform(val, curVisitPath, visited)}
+      },`;
+    } else {
+      throw new Error(`not suported type for '${util.type(val)}'`);
     }
+
+    // if (util.type(val) === "RegExp") {
+    //   code += `
+    //     ["${key}"] = new GrammarToken[]
+    //     {
+    //       ${toGrammarToken(
+    //         val,
+    //         false,
+    //         false,
+    //         [],
+    //         null,
+    //         visited,
+    //         `${objVisitCode}["${key}"][0]`
+    //       )}
+    //     },`;
+    // } else if (util.type(val) == "Object") {
+    //   id = util.objId(val);
+    //   if (visited[id]) {
+    //     if (key === "rest") {
+    //       code += `
+    //       Reset = ${visited[id]},`;
+    //     } else {
+    //       code += `
+    //       ["${key}"] = ${visited[id]},`;
+    //     }
+    //     continue;
+    //   }
+
+    //   visited[id] = `${objVisitCode}["${key}"]`;
+    //   code += `
+    //     ["${key}"] = new GrammarToken[]
+    //     {
+    //       ${toGrammarToken(
+    //         val.pattern,
+    //         val.lookbehind,
+    //         val.greedy,
+    //         val.alias,
+    //         val.inside,
+    //         visited,
+    //         `${objVisitCode}["${key}"][0]`
+    //       )}
+    //     },`;
+    // } else if (util.type(val) === "Array") {
+    //   // TODO
+    // }
   }
 
   code += `
