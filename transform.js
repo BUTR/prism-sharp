@@ -67,7 +67,7 @@ public class ${className} : IGrammarDefinition
 }
 
 function innerTransform(items, preVisitPath, visited) {
-  var outString = "";
+  var code = "";
 
   for (var i = 0, len = items.length; i < len; ++i) {
     var val = items[i];
@@ -75,14 +75,14 @@ function innerTransform(items, preVisitPath, visited) {
 
     var id = util.objId(val);
     if (visited[id]) {
-      outString += `
+      code += `
         ${visited[id]},`;
       continue;
     }
     visited[id] = `${preVisitPath}[${i}]`;
 
     if (valType === "RegExp" || valType === "Object") {
-      outString += `
+      code += `
         ${toGrammarToken(
           val.pattern || val,
           val.lookbehind || false,
@@ -97,7 +97,7 @@ function innerTransform(items, preVisitPath, visited) {
     }
   }
 
-  return outString;
+  return code;
 }
 
 /**
@@ -195,51 +195,6 @@ function transformInside(inside, visited, preVisitPath) {
     } else {
       throw new Error(`not suported type for '${util.type(val)}'`);
     }
-
-    // if (util.type(val) === "RegExp") {
-    //   code += `
-    //     ["${key}"] = new GrammarToken[]
-    //     {
-    //       ${toGrammarToken(
-    //         val,
-    //         false,
-    //         false,
-    //         [],
-    //         null,
-    //         visited,
-    //         `${objVisitCode}["${key}"][0]`
-    //       )}
-    //     },`;
-    // } else if (util.type(val) == "Object") {
-    //   id = util.objId(val);
-    //   if (visited[id]) {
-    //     if (key === "rest") {
-    //       code += `
-    //       Reset = ${visited[id]},`;
-    //     } else {
-    //       code += `
-    //       ["${key}"] = ${visited[id]},`;
-    //     }
-    //     continue;
-    //   }
-
-    //   visited[id] = `${objVisitCode}["${key}"]`;
-    //   code += `
-    //     ["${key}"] = new GrammarToken[]
-    //     {
-    //       ${toGrammarToken(
-    //         val.pattern,
-    //         val.lookbehind,
-    //         val.greedy,
-    //         val.alias,
-    //         val.inside,
-    //         visited,
-    //         `${objVisitCode}["${key}"][0]`
-    //       )}
-    //     },`;
-    // } else if (util.type(val) === "Array") {
-    //   // TODO
-    // }
   }
 
   code += `
