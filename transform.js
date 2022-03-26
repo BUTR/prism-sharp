@@ -1,11 +1,24 @@
 // [WIP] Using the script to transform supported languages in prismjs to C# code.
 
 const prism = require("./prismjs/prism");
+const loadLanguages = require("./prismjs/components/");
+const { writeFileSync, existsSync, rmSync, mkdirSync } = require("fs");
+
+loadLanguages(); // load all
 
 const { languages, util } = prism;
 
-const csharpCode = transform("js");
-console.log(csharpCode);
+const csharp = transform("js");
+// console.log(csharp.className);
+// console.log(csharp.code);
+
+const outputDir = "codegen";
+
+if (!existsSync(outputDir)) mkdirSync(outputDir);
+
+const path = `${outputDir}/${csharp.className}.cs`;
+if (existsSync(path)) rmSync(path);
+writeFileSync(path, csharp.code);
 
 function transform(lang) {
   const className =
@@ -63,7 +76,7 @@ public class ${className} : IGrammarDefinition
 
   // console.log(visited);
 
-  return outString;
+  return { className, code: outString };
 }
 
 function innerTransform(items, preVisitPath, visited) {
@@ -72,23 +85,27 @@ function innerTransform(items, preVisitPath, visited) {
   for (var i = 0, len = items.length; i < len; ++i) {
     var val = items[i];
     var valType = util.type(val);
+    var curVisitPath = `${preVisitPath}[${i}]`;
 
-    var id = util.objId(val);
-    if (visited[id]) {
+    if (valType === "RegExp") {
       code += `
+        ${toGrammarToken(val, false, false, [], null, visited, curVisitPath)},`;
+    } else if (valType === "Object") {
+      var id = util.objId(val);
+      if (visited[id]) {
+        code += `
         ${visited[id]},`;
-      continue;
-    }
-    visited[id] = `${preVisitPath}[${i}]`;
+        continue;
+      }
+      visited[id] = curVisitPath;
 
-    if (valType === "RegExp" || valType === "Object") {
       code += `
         ${toGrammarToken(
-          val.pattern || val,
-          val.lookbehind || false,
-          val.greedy || false,
-          val.alias || [],
-          val.inside || null,
+          val.pattern,
+          val.lookbehind,
+          val.greedy,
+          val.alias,
+          val.inside,
           visited,
           visited[id]
         )},`;
@@ -161,36 +178,59 @@ function toGrammarToken(
 }
 
 function transformInside(inside, visited, preVisitPath) {
-  var code = `new Grammar{
-    `;
+  var code = `new Grammar
+  {`;
 
   for (const key in inside) {
     var val = inside[key];
     var valType = util.type(val);
-    var curVisitPath = `${preVisitPath}["${key}"]`;
 
-    if (valType === "RegExp" || valType === "Object") {
-      id = util.objId(val);
+    if (valType === "RegExp") {
+      code += `
+      ["${key}"] = new GrammarToken[]
+      {
+          ${innerTransform([val], `${preVisitPath}["${key}"]`, visited)}
+      },`;
+      continue;
+    }
+
+    var id = util.objId(val);
+    if (key === "rest") {
       if (visited[id]) {
-        if (key === "rest") {
-          code += `
-          Reset = ${visited[id]},`;
-        } else {
-          code += `
-          ["${key}"] = ${visited[id]},`;
-        }
+        code += `
+      Reset = ${visited[id]},`;
+        continue;
+      } else {
+        code += `
+      Reset = ${transformInside(val, visited, `${preVisitPath}.Reset`)},`;
+        continue;
+      }
+    }
+
+    if (valType === "Object") {
+      if (visited[id]) {
+        code += `
+      ["${key}"] = new GrammarToken[]
+      {
+        ${visited[id]}
+      },`;
         continue;
       }
       code += `
       ["${key}"] = new GrammarToken[]
       {
-          ${innerTransform([val], curVisitPath, visited)}
+          ${innerTransform([val], `${preVisitPath}["${key}"]`, visited)}
       },`;
     } else if (valType === "Array") {
+      if (visited[id]) {
+        code += `
+      ["${key}"] = ${visited[id]},`;
+        continue;
+      }
       code += `
       ["${key}"] = new GrammarToken[]
       {
-          ${innerTransform(val, curVisitPath, visited)}
+          ${innerTransform(val, `${preVisitPath}["${key}"]`, visited)}
       },`;
     } else {
       throw new Error(`not suported type for '${util.type(val)}'`);
