@@ -4,7 +4,7 @@ const prism = require("./prismjs/prism");
 const loadLanguages = require("./prismjs/components/");
 const { writeFileSync, existsSync, rmSync, mkdirSync } = require("fs");
 
-// loadLanguages(); // load all
+loadLanguages(); // load all
 
 const { languages, util } = prism;
 
@@ -13,10 +13,9 @@ const csharp = transform("javascript");
 // console.log(csharp.code);
 
 const outputDir = "codegen";
+const path = `${outputDir}/${csharp.className}.cs`;
 
 if (!existsSync(outputDir)) mkdirSync(outputDir);
-
-const path = `${outputDir}/${csharp.className}.cs`;
 if (existsSync(path)) rmSync(path);
 writeFileSync(path, csharp.code);
 
@@ -110,7 +109,7 @@ function innerTransform(items, preVisitPath, visited, laterAssigned) {
       var id = util.objId(val);
       if (visited[id]) {
         code += `
-        null /* see below */,`;
+        null! /* see below */,`;
         laterAssigned.push(`${curVisitPath} =  ${visited[id]}`);
         continue;
       }
@@ -149,7 +148,7 @@ function toGrammarToken(
   objVisitCode,
   laterAssigned
 ) {
-  var pattern = regex.source;
+  var pattern = regex.source.replace(/"/g, '""');
   var alias =
     util.type(alias) === "String"
       ? [alias]
@@ -159,22 +158,27 @@ function toGrammarToken(
   var lookbehind = !!lookbehind;
   var greedy = !!greedy;
 
+  var newRegex = "";
   var flags = regex.flags;
-  var csharpRegexOptions = "RegexOptions.Compiled";
 
-  if (flags.includes("i")) {
-    csharpRegexOptions += " | RegexOptions.IgnoreCase";
-  }
-  if (flags.includes("m")) {
-    // TODO: fix
-    // pattern = pattern.replace(/\$/g, "\\r?$");
-    csharpRegexOptions += " | RegexOptions.Multiline";
+  if (flags) {
+    var csharpRegexOptions = "RegexOptions.Compiled";
+
+    if (flags.includes("i")) {
+      csharpRegexOptions += " | RegexOptions.IgnoreCase";
+    }
+    if (flags.includes("m")) {
+      // TODO: fix
+      // pattern = pattern.replace(/\$/g, "\\r?$");
+      csharpRegexOptions += " | RegexOptions.Multiline";
+    }
+
+    newRegex = `new Regex(@"${pattern}", ${csharpRegexOptions})`;
+  } else {
+    newRegex = `@"${pattern}"`;
   }
 
-  var code = `new(new Regex(@"${pattern.replace(
-    /"/g,
-    '""'
-  )}", ${csharpRegexOptions}), lookbehind: ${lookbehind}, greedy: ${greedy}`;
+  var code = `new(${newRegex}, lookbehind: ${lookbehind}, greedy: ${greedy}`;
 
   if (alias.length) {
     code += `, alias: new []{"${alias.join(" , ")}" }`;
@@ -183,7 +187,7 @@ function toGrammarToken(
   if (inside) {
     var id = util.objId(inside);
     if (visited[id]) {
-      code += `, inside: null /* see below */`;
+      code += `, inside: null! /* see below */`;
       laterAssigned.push(`${objVisitCode}.Inside = ${visited[id]}`);
     } else {
       visited[id] = `${objVisitCode}.Inside!`;
@@ -226,7 +230,8 @@ function transformInside(inside, visited, preVisitPath, laterAssigned) {
     if (key === "rest") {
       if (visited[id]) {
         code += `
-      Reset = ${visited[id]},`;
+      Reset = null! /* see below */,`;
+        laterAssigned.push(`${preVisitPath}.Reset = ${visited[id]}`);
         continue;
       } else {
         code += `
@@ -245,7 +250,7 @@ function transformInside(inside, visited, preVisitPath, laterAssigned) {
         code += `
       ["${key}"] = new GrammarToken[]
       {
-        null /* see below */
+        null! /* see below */
       },`;
         laterAssigned.push(`${preVisitPath}["${key}"][0] = ${visited[id]}`);
         continue;
@@ -263,7 +268,7 @@ function transformInside(inside, visited, preVisitPath, laterAssigned) {
     } else if (valType === "Array") {
       if (visited[id]) {
         code += `
-      ["${key}"] = null /* see below */,`;
+      ["${key}"] = null! /* see below */,`;
         laterAssigned.push(`${preVisitPath}["${key}"] = ${visited[id]}`);
         continue;
       }
