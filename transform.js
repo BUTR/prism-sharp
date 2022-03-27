@@ -4,11 +4,11 @@ const prism = require("./prismjs/prism");
 const loadLanguages = require("./prismjs/components/");
 const { writeFileSync, existsSync, rmSync, mkdirSync } = require("fs");
 
-loadLanguages(); // load all
+// loadLanguages(); // load all
 
 const { languages, util } = prism;
 
-const csharp = transform("js");
+const csharp = transform("javascript");
 // console.log(csharp.className);
 // console.log(csharp.code);
 
@@ -46,6 +46,8 @@ public class ${className} : IGrammarDefinition
   var id = util.objId(currentLang);
   visited[id] = `grammar`;
 
+  var laterAssigned = [];
+
   for (const key in currentLang) {
     var val = currentLang[key];
     var valType = util.type(val);
@@ -55,17 +57,22 @@ public class ${className} : IGrammarDefinition
       outString += `
       ${curVisitPath} = new GrammarToken[]
       {
-          ${innerTransform([val], curVisitPath, visited)}
+          ${innerTransform([val], curVisitPath, visited, laterAssigned)}
       };`;
     } else if (valType === "Array") {
       outString += `
       ${curVisitPath} = new GrammarToken[]
       {
-          ${innerTransform(val, curVisitPath, visited)}
+          ${innerTransform(val, curVisitPath, visited, laterAssigned)}
       };`;
     } else {
       throw new Error(`not suported type for '${util.type(val)}'`);
     }
+  }
+
+  for (const expr of laterAssigned) {
+    outString += `
+      ${expr};`;
   }
 
   outString += `
@@ -79,7 +86,7 @@ public class ${className} : IGrammarDefinition
   return { className, code: outString };
 }
 
-function innerTransform(items, preVisitPath, visited) {
+function innerTransform(items, preVisitPath, visited, laterAssigned) {
   var code = "";
 
   for (var i = 0, len = items.length; i < len; ++i) {
@@ -89,12 +96,22 @@ function innerTransform(items, preVisitPath, visited) {
 
     if (valType === "RegExp") {
       code += `
-        ${toGrammarToken(val, false, false, [], null, visited, curVisitPath)},`;
+        ${toGrammarToken(
+          val,
+          false,
+          false,
+          [],
+          null,
+          visited,
+          curVisitPath,
+          laterAssigned
+        )},`;
     } else if (valType === "Object") {
       var id = util.objId(val);
       if (visited[id]) {
         code += `
-        ${visited[id]},`;
+        null /* see below */,`;
+        laterAssigned.push(`${curVisitPath} =  ${visited[id]}`);
         continue;
       }
       visited[id] = curVisitPath;
@@ -107,7 +124,8 @@ function innerTransform(items, preVisitPath, visited) {
           val.alias,
           val.inside,
           visited,
-          visited[id]
+          visited[id],
+          laterAssigned
         )},`;
     } else {
       throw new Error(`not suported type for '${valType}'`);
@@ -128,10 +146,9 @@ function toGrammarToken(
   alias,
   inside,
   visited,
-  objVisitCode
+  objVisitCode,
+  laterAssigned
 ) {
-  visited = visited || {};
-
   var pattern = regex.source;
   var alias =
     util.type(alias) === "String"
@@ -166,10 +183,16 @@ function toGrammarToken(
   if (inside) {
     var id = util.objId(inside);
     if (visited[id]) {
-      code += `, inside: ${visited[id]}`;
+      code += `, inside: null /* see below */`;
+      laterAssigned.push(`${objVisitCode}.Inside = ${visited[id]}`);
     } else {
-      visited[id] = `${objVisitCode}.Inside`;
-      code += `, inside: ${transformInside(inside, visited, visited[id])}`;
+      visited[id] = `${objVisitCode}.Inside!`;
+      code += `, inside: ${transformInside(
+        inside,
+        visited,
+        visited[id],
+        laterAssigned
+      )}`;
     }
   }
 
@@ -177,7 +200,7 @@ function toGrammarToken(
   return code;
 }
 
-function transformInside(inside, visited, preVisitPath) {
+function transformInside(inside, visited, preVisitPath, laterAssigned) {
   var code = `new Grammar
   {`;
 
@@ -189,7 +212,12 @@ function transformInside(inside, visited, preVisitPath) {
       code += `
       ["${key}"] = new GrammarToken[]
       {
-          ${innerTransform([val], `${preVisitPath}["${key}"]`, visited)}
+          ${innerTransform(
+            [val],
+            `${preVisitPath}["${key}"]`,
+            visited,
+            laterAssigned
+          )}
       },`;
       continue;
     }
@@ -202,7 +230,12 @@ function transformInside(inside, visited, preVisitPath) {
         continue;
       } else {
         code += `
-      Reset = ${transformInside(val, visited, `${preVisitPath}.Reset`)},`;
+      Reset = ${transformInside(
+        val,
+        visited,
+        `${preVisitPath}.Reset!`,
+        laterAssigned
+      )},`;
         continue;
       }
     }
@@ -212,25 +245,37 @@ function transformInside(inside, visited, preVisitPath) {
         code += `
       ["${key}"] = new GrammarToken[]
       {
-        ${visited[id]}
+        null /* see below */
       },`;
+        laterAssigned.push(`${preVisitPath}["${key}"][0] = ${visited[id]}`);
         continue;
       }
       code += `
       ["${key}"] = new GrammarToken[]
       {
-          ${innerTransform([val], `${preVisitPath}["${key}"]`, visited)}
+          ${innerTransform(
+            [val],
+            `${preVisitPath}["${key}"]`,
+            visited,
+            laterAssigned
+          )}
       },`;
     } else if (valType === "Array") {
       if (visited[id]) {
         code += `
-      ["${key}"] = ${visited[id]},`;
+      ["${key}"] = null /* see below */,`;
+        laterAssigned.push(`${preVisitPath}["${key}"] = ${visited[id]}`);
         continue;
       }
       code += `
       ["${key}"] = new GrammarToken[]
       {
-          ${innerTransform(val, `${preVisitPath}["${key}"]`, visited)}
+          ${innerTransform(
+            val,
+            `${preVisitPath}["${key}"]`,
+            visited,
+            laterAssigned
+          )}
       },`;
     } else {
       throw new Error(`not suported type for '${util.type(val)}'`);
