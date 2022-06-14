@@ -5,14 +5,27 @@ namespace PrismSharp.Core;
 // TODO: maybe the class could be created by `source-generators`
 public static class LanguageGrammars
 {
+    private static readonly IReadOnlyDictionary<string, Lazy<Grammar>> Definitions;
+
+    static LanguageGrammars()
+    {
+        Definitions = new Dictionary<string, Lazy<Grammar>>
+        {
+            ["csharp"] = new(() => new CSharp().Define()),
+            ["javascript"] = new(() => new JavaScript().Define()),
+        };
+    }
+
+
     public static Grammar C => new C().Define();
+    public static Grammar Cpp => Definitions["cpp"].Value;
     public static Grammar CLike => new CLike().Define();
-    public static Grammar CSharp => new CSharp().Define();
+    public static Grammar CSharp => Definitions["csharp"].Value;
     public static Grammar Cs => CSharp;
     public static Grammar DotNet => CSharp;
     public static Grammar AspNet => new AspNet().Define();
     public static Grammar Aspx => AspNet;
-    public static Grammar JavaScript => new JavaScript().Define();
+    public static Grammar JavaScript => Definitions["javascript"].Value;
     public static Grammar Js => JavaScript;
     public static Grammar RegExp => new RegExp().Define();
     public static Grammar Regex => RegExp;

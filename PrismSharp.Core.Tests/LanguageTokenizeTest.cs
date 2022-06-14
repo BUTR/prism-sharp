@@ -25,10 +25,12 @@ public class LanguageTokenizeTest
         Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.C, testFile));
     }
 
-    [Fact]
-    public void test_CSharp_features_ok()
+    [Theory]
+    [InlineData("csharp")]
+    // [InlineData("csharp!+xml-doc")]
+    public void test_CSharp_features_ok(string testCase)
     {
-        var testFiles = Directory.GetFiles("./testcases/csharp/", "*.test")
+        var testFiles = Directory.GetFiles($"./testcases/{testCase}/", "*.test")
             .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
         Assert.NotEmpty(testFiles);
         Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.CSharp, testFile));
@@ -136,4 +138,14 @@ public class LanguageTokenizeTest
         Assert.NotEmpty(testFiles);
         Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Css, testFile));
     }
+
+    // [Theory]
+    // [InlineData("cpp")]
+    // public void test_Cpp_all_features_ok(string testCase)
+    // {
+    //     var testFiles = Directory.GetFiles($"./testcases/{testCase}/", "*.test")
+    //         .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
+    //     Assert.NotEmpty(testFiles);
+    //     Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Cpp, testFile));
+    // }
 }
