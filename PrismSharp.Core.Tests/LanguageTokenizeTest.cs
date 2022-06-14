@@ -148,4 +148,14 @@ public class LanguageTokenizeTest
     //     Assert.NotEmpty(testFiles);
     //     Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Cpp, testFile));
     // }
+
+    [Theory]
+    [InlineData("lua")]
+    public void test_Lua_all_features_ok(string testCase)
+    {
+        var testFiles = Directory.GetFiles($"./testcases/{testCase}/", "*.test")
+            .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
+        Assert.NotEmpty(testFiles);
+        Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Lua, testFile));
+    }
 }

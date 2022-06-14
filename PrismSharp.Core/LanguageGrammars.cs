@@ -44,4 +44,5 @@ public static class LanguageGrammars
     public static Grammar Yaml => new Yaml().Define();
     public static Grammar Yml => Yaml;
     public static Grammar Css => new Css().Define();
+    public static Grammar Lua => new Lua().Define();
 }

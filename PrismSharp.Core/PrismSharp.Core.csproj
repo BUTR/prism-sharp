@@ -2,13 +2,14 @@
 
     <PropertyGroup>
         <PackageId>PrismSharp.Core</PackageId>
-        <Version>0.1.1-build.2</Version>
         <Description>A porting of PrismJS to C# or .NET.</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
         <LangVersion>10</LangVersion>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <RepositoryUrl>https://github.com/tatwd/prism-sharp</RepositoryUrl>
     </PropertyGroup>
 
 </Project>
