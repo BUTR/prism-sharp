@@ -15,6 +15,7 @@ public static class LanguageGrammars
         AddDefinition<CLike>("clike");
         AddDefinition<CSharp>("csharp", "cs", "dotnet");
         AddDefinition<AspNet>("aspnet", "aspx");
+        AddDefinition<CSHtml>("cshtml", "razor");
         AddDefinition<JavaScript>("javascript", "js");
         AddDefinition<RegExp>("regexp", "regex");
         AddDefinition<Markup>("markup", "html", "mathml", "svg", "xml", "atom", "rss");
@@ -24,6 +25,13 @@ public static class LanguageGrammars
         AddDefinition<Yaml>("yaml", "yml");
         AddDefinition<Css>("css");
         AddDefinition<Lua>("lua");
+        AddDefinition<Bash>("bash", "shell");
+        AddDefinition<Batch>("batch", "cmd");
+        AddDefinition<Cpp>("cpp", "c++");
+        AddDefinition<Go>("go");
+        AddDefinition<Rust>("rust");
+        AddDefinition<Python>("python", "py");
+        AddDefinition<Java>("java");
     }
 
     public static void AddDefinition<T>(params string[] alias) where T : IGrammarDefinition, new()
@@ -40,12 +48,14 @@ public static class LanguageGrammars
     }
 
     public static Grammar C => GetGrammar("c");
+    public static Grammar Cpp => GetGrammar("cpp");
     public static Grammar CLike => GetGrammar("clike");
     public static Grammar CSharp => GetGrammar("csharp");
     // public static Grammar Cs => CSharp;
     // public static Grammar DotNet => CSharp;
     public static Grammar AspNet => GetGrammar("aspnet");
     // public static Grammar Aspx => AspNet;
+    public static Grammar CSHtml => GetGrammar("cshtml");
     public static Grammar JavaScript => GetGrammar("javascript");
     // public static Grammar Js => JavaScript;
     public static Grammar RegExp => GetGrammar("regexp");
@@ -66,4 +76,10 @@ public static class LanguageGrammars
     // public static Grammar Yml => Yaml;
     public static Grammar Css => GetGrammar("css");
     public static Grammar Lua => GetGrammar("lua");
+    public static Grammar Bash => GetGrammar("bash");
+    public static Grammar Batch => GetGrammar("batch");
+    public static Grammar Go => GetGrammar("go");
+    public static Grammar Rust => GetGrammar("rust");
+    public static Grammar Python => GetGrammar("python");
+    public static Grammar Java => GetGrammar("java");
 }

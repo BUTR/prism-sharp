@@ -25,6 +25,15 @@ public class LanguageTokenizeTest
         Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.C, testFile));
     }
 
+    [Fact]
+    public void test_Cpp_features_ok()
+    {
+        var testFiles = Directory.GetFiles("./testcases/cpp/", "*.test")
+            .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
+        Assert.NotEmpty(testFiles);
+        Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Cpp, testFile));
+    }
+
     [Theory]
     [InlineData("csharp")]
     // [InlineData("csharp!+xml-doc")]
@@ -51,6 +60,17 @@ public class LanguageTokenizeTest
     {
         var testFile = $"./testcases/csharp+aspnet/{testCase}.test";
         TestHelper.RunTestCaseFromFile(LanguageGrammars.AspNet, testFile);
+    }
+
+
+    [Fact]
+    public void test_CSHtml_features_ok()
+    {
+        var testFiles = Directory.GetFiles("./testcases/cshtml/", "*.test")
+            .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
+        Assert.NotEmpty(testFiles);
+        Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.CSHtml, testFile));
+
     }
 
     [Fact]
@@ -139,16 +159,6 @@ public class LanguageTokenizeTest
         Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Css, testFile));
     }
 
-    // [Theory]
-    // [InlineData("cpp")]
-    // public void test_Cpp_all_features_ok(string testCase)
-    // {
-    //     var testFiles = Directory.GetFiles($"./testcases/{testCase}/", "*.test")
-    //         .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
-    //     Assert.NotEmpty(testFiles);
-    //     Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Cpp, testFile));
-    // }
-
     [Theory]
     [InlineData("lua")]
     public void test_Lua_all_features_ok(string testCase)
@@ -157,5 +167,65 @@ public class LanguageTokenizeTest
             .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
         Assert.NotEmpty(testFiles);
         Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Lua, testFile));
+    }
+
+    [Theory]
+    [InlineData("bash")]
+    public void test_Bash_all_features_ok(string testCase)
+    {
+        var testFiles = Directory.GetFiles($"./testcases/{testCase}/", "*.test")
+            .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
+        Assert.NotEmpty(testFiles);
+        Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Bash, testFile));
+    }
+
+    [Theory]
+    [InlineData("batch")]
+    public void test_Batch_all_features_ok(string testCase)
+    {
+        var testFiles = Directory.GetFiles($"./testcases/{testCase}/", "*.test")
+            .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
+        Assert.NotEmpty(testFiles);
+        Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Batch, testFile));
+    }
+
+    [Theory]
+    [InlineData("go")]
+    public void test_Go_all_features_ok(string testCase)
+    {
+        var testFiles = Directory.GetFiles($"./testcases/{testCase}/", "*.test")
+            .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
+        Assert.NotEmpty(testFiles);
+        Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Go, testFile));
+    }
+
+    [Theory]
+    [InlineData("rust")]
+    public void test_Rust_all_features_ok(string testCase)
+    {
+        var testFiles = Directory.GetFiles($"./testcases/{testCase}/", "*.test")
+            .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
+        Assert.NotEmpty(testFiles);
+        Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Rust, testFile));
+    }
+
+    [Theory]
+    [InlineData("python")]
+    public void test_Python_all_features_ok(string testCase)
+    {
+        var testFiles = Directory.GetFiles($"./testcases/{testCase}/", "*.test")
+            .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
+        Assert.NotEmpty(testFiles);
+        Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Python, testFile));
+    }
+
+    [Theory]
+    [InlineData("java")]
+    public void test_Java_all_features_ok(string testCase)
+    {
+        var testFiles = Directory.GetFiles($"./testcases/{testCase}/", "*.test")
+            .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
+        Assert.NotEmpty(testFiles);
+        Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Java, testFile));
     }
 }
