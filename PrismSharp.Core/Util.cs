@@ -7,9 +7,10 @@ public static class Util
     public static string Slice(string str, int startIndex, int? endIndex = null)
     {
         if (startIndex >= str.Length) return string.Empty;
-        return endIndex.HasValue
-            ? str.Substring(startIndex, endIndex.Value - startIndex)
-            : str.Substring(startIndex);
+        if (!endIndex.HasValue || endIndex > str.Length)
+            endIndex = str.Length;
+        var sliceLength = endIndex.Value - startIndex;
+        return str.Substring(startIndex, sliceLength);
     }
 
     public static MyMatch MatchPattern(Regex pattern, int pos, string text, bool lookbehind)

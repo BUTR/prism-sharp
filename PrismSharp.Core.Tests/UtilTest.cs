@@ -19,5 +19,26 @@ public class UtilTest
         Assert.Equal(37, match.Index);
     }
 
+    [Theory]
+    [InlineData("abc", 0, "abc")]
+    [InlineData("abc", 1, "bc")]
+    [InlineData("abc", 2, "c")]
+    [InlineData("abc", 3, "")]
+    [InlineData("", 0, "")]
+    public void Slice_without_endIndex_Ok(string str, int startIndex, string expected)
+    {
+        Assert.Equal(expected, Util.Slice(str, startIndex));
+    }
 
+    [Theory]
+    [InlineData("abc", 0, 0, "")]
+    [InlineData("abc", 1, 2, "b")]
+    [InlineData("abc", 2, 3, "c")]
+    [InlineData("abc", 0, 5, "abc")]
+    [InlineData("abc", 4, 2, "")]
+    [InlineData("", 0, 2, "")]
+    public void Slice_with_endIndex_Ok(string str, int startIndex, int endIndex, string expected)
+    {
+        Assert.Equal(expected, Util.Slice(str, startIndex, endIndex));
+    }
 }
