@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <PackageId>PrismSharp.Core</PackageId>
-        <Version>0.1.3</Version>
+        <Version>0.1.4</Version>
         <Description>A porting of PrismJS to C# or .NET.</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <ImplicitUsings>enable</ImplicitUsings>
