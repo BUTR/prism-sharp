@@ -18,7 +18,7 @@ jobs:
 
     - name: echo github_ref
       run: |
-        echo $Env:GITHUB_REF
+        echo $GITHUB_REF
 
     # - name: Get Build Version
     #   run: |
