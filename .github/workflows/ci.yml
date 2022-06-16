@@ -16,10 +16,6 @@ jobs:
       with:
         submodules: 'true'
 
-    - name: echo github_ref
-      run: |
-        echo $GITHUB_REF
-
     # - name: Get Build Version
     #   run: |
     #     Import-Module .\scripts\GetBuildVersion.psm1
