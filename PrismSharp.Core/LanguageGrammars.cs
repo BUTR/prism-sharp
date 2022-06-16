@@ -16,6 +16,7 @@ public static class LanguageGrammars
         AddDefinition<CSharp>("csharp", "cs", "dotnet");
         AddDefinition<AspNet>("aspnet", "aspx");
         AddDefinition<CSHtml>("cshtml", "razor");
+        AddDefinition<Cil>("cil");
         AddDefinition<JavaScript>("javascript", "js");
         AddDefinition<RegExp>("regexp", "regex");
         AddDefinition<Markup>("markup", "html", "mathml", "svg", "xml", "atom", "rss");
@@ -56,6 +57,7 @@ public static class LanguageGrammars
     public static Grammar AspNet => GetGrammar("aspnet");
     // public static Grammar Aspx => AspNet;
     public static Grammar CSHtml => GetGrammar("cshtml");
+    public static Grammar Cil => GetGrammar("cil");
     public static Grammar JavaScript => GetGrammar("javascript");
     // public static Grammar Js => JavaScript;
     public static Grammar RegExp => GetGrammar("regexp");

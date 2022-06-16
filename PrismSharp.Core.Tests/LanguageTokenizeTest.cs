@@ -70,7 +70,15 @@ public class LanguageTokenizeTest
             .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
         Assert.NotEmpty(testFiles);
         Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.CSHtml, testFile));
+    }
 
+    [Fact]
+    public void test_Cil_features_ok()
+    {
+        var testFiles = Directory.GetFiles("./testcases/cil/", "*.test")
+            .Where(testFile => !testFile.EndsWith(".html.test")).ToArray();
+        Assert.NotEmpty(testFiles);
+        Assert.All(testFiles, testFile => TestHelper.RunTestCaseFromFile(LanguageGrammars.Cil, testFile));
     }
 
     [Fact]

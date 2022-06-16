@@ -8,7 +8,7 @@ loadLanguages(); // load all
 
 const { languages, util } = prism;
 
-const csharp = transform("java");
+const csharp = transform("cil");
 // console.log(csharp.className);
 // console.log(csharp.code);
 
