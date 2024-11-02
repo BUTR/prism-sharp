@@ -43,10 +43,7 @@ public static class Util
             Groups = ParseGroups(match);
         }
 
-        private static string[] ParseGroups(Match match)
-        {
-            // trim end with `\r`
-            return (from Group g in match.Groups select g.Value.TrimEnd('\r')).ToArray();
-        }
+        // trim end with `\r`
+        private static string[] ParseGroups(Match match) => match.Groups.OfType<Group>().Select(g => g.Value.TrimEnd('\r')).ToArray();
     }
 }

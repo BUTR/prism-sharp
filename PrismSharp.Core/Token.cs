@@ -13,7 +13,7 @@ public abstract class Token
     protected Token(string? type, string[]? alias, string? matchedStr)
     {
         Type = type;
-        Alias = alias ?? Array.Empty<string>();
+        Alias = alias ?? [];
         Length = matchedStr?.Length ?? 0;
     }
 
@@ -27,41 +27,28 @@ public abstract class Token
     /// </summary>
     /// <returns></returns>
     public abstract int GetLength();
-
 }
 
 public class StringToken : Token
 {
     public string Content { get; }
 
-    public StringToken(string content,
-        string? type = null,
-        string[]? alias = null,
-        string? matchedStr = null) : base(type, alias, matchedStr)
+    public StringToken(string content, string? type = null, string[]? alias = null, string? matchedStr = null) : base(type, alias, matchedStr)
     {
         Content = content;
     }
 
-    public override int GetLength()
-    {
-        return IsMatchedToken() ? Length : Content.Length;
-    }
+    public override int GetLength() => IsMatchedToken() ? Length : Content.Length;
 }
 
 public class StreamToken : Token
 {
     public Token[] Content { get; }
 
-    public StreamToken(Token[] content,
-        string? type = null,
-        string[]? alias = null,
-        string? matchedStr = null) : base(type, alias, matchedStr)
+    public StreamToken(Token[] content, string? type = null, string[]? alias = null, string? matchedStr = null) : base(type, alias, matchedStr)
     {
         Content = content;
     }
 
-    public override int GetLength()
-    {
-        return IsMatchedToken() ? Length : Content.Length;
-    }
+    public override int GetLength() => IsMatchedToken() ? Length : Content.Length;
 }

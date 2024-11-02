@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Basic.Reference.Assemblies.Net80" Version="1.7.9" GeneratePathProperty="true" />
+    <PackageReference Include="Basic.Reference.Assemblies.NetStandard20" Version="1.7.9" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
+
+    <PackageReference Include="Jint" Version="4.1.0" GeneratePathProperty="true" />
+    <PackageReference Include="Acornima" Version="1.1.0" GeneratePathProperty="true" />
+  </ItemGroup>
+  
+  <PropertyGroup>
+    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+  </PropertyGroup>
+
+  <Target Name="GetDependencyTargetPaths">
+    <ItemGroup>
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgBasic_Reference_Assemblies_NetStandard20)\lib\netstandard2.0\Basic.Reference.Assemblies.NetStandard20.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgBasic_Reference_Assemblies_Net80)\lib\netstandard2.0\Basic.Reference.Assemblies.Net80.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgJint)\lib\netstandard2.0\Jint.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgAcornima)\lib\netstandard2.0\Acornima.dll" IncludeRuntimeDependency="false" />
+    </ItemGroup>
+  </Target>
+  
+
+  <ItemGroup>
+    <Compile Include="..\SimpleJSON\SimpleJSON.cs">
+      <Link>SimpleJSON.cs</Link>
+    </Compile>
+
+    <ProjectReference Include="..\PrismSharp.RegExCompiler\PrismSharp.RegExCompiler.csproj" Condition="$(TargetFramework) == 'netstandard2.0'" />
+    <EmbeddedResource Include="..\PrismSharp.RegExCompiler\bin\$(Configuration)\net45\PrismSharp.RegExCompiler.exe" Condition="$(TargetFramework) == 'netstandard2.0'">
+      <Link>PrismSharp.RegExCompiler.exe</Link>
+      <LogicalName>PrismSharp.RegExCompiler.exe</LogicalName>
+    </EmbeddedResource>
+    
+    <EmbeddedResource Include="..\prismjs\prism.js">
+      <Link>prismjs\%(FileName)%(Extension)</Link>
+      <LogicalName>prismjs\%(FileName)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="prismjs\prism-nasm.js">
+      <Link>prismjs\%(FileName)%(Extension)</Link>
+      <LogicalName>prismjs\%(FileName)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\prismjs\components\prism-cil.js">
+      <Link>prismjs\%(FileName)%(Extension)</Link>
+      <LogicalName>prismjs\%(FileName)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\prismjs\components\prism-csharp.js">
+      <Link>prismjs\%(FileName)%(Extension)</Link>
+      <LogicalName>prismjs\%(FileName)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  
+</Project>

@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 namespace PrismSharp.Core;
 
@@ -16,25 +16,12 @@ public class GrammarToken
     public string[] Alias { get; }
     public Grammar? Inside { get; set; }
 
-
-    public GrammarToken(string pattern,
-        bool lookbehind = false,
-        bool greedy = false,
-        string[]? alias = null,
-        Grammar? inside = null) : this(new Regex(pattern, RegexOptions.Compiled), lookbehind, greedy, alias, inside)
-    {
-    }
-
-    public GrammarToken(Regex pattern,
-        bool lookbehind = false,
-        bool greedy = false,
-        string[]? alias = null,
-        Grammar? inside = null)
+    public GrammarToken(Regex pattern, bool lookbehind = false, bool greedy = false, string[]? alias = null, Grammar? inside = null)
     {
         Pattern = pattern;
         Lookbehind = lookbehind;
         Greedy = greedy;
-        Alias = alias ?? Array.Empty<string>();
+        Alias = alias ?? [];
         Inside = inside;
     }
 

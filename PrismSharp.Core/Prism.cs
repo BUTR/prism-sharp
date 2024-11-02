@@ -5,8 +5,10 @@ public static class Prism
     public static Token[] Tokenize(string text, Grammar grammar)
     {
         var rest = grammar.Reset;
-        if (rest is not null) {
-            foreach (var kv in rest) {
+        if (rest is not null)
+        {
+            foreach (var kv in rest)
+            {
                 grammar[kv.Key] = kv.Value;
             }
 
@@ -26,8 +28,7 @@ public static class Prism
         return tokenList.Where(t => t != null!).ToArray();
     }
 
-    private static void MatchGrammar(string text, LinkedList<Token> tokenList, Grammar grammar,
-        LinkedListNode<Token> startNode, int startPos, RematchOptions? rematch = null)
+    private static void MatchGrammar(string text, LinkedList<Token> tokenList, Grammar grammar, LinkedListNode<Token> startNode, int startPos, RematchOptions? rematch = null)
     {
         foreach (var kv in grammar)
         {
@@ -36,7 +37,7 @@ public static class Prism
 
             for (var j = 0; j < patterns.Length; ++j)
             {
-                if (rematch?.Cause == token + ',' + j)
+                if (rematch?.Cause == $"{token},{j}")
                     return;
 
                 var patternObj = patterns[j];
@@ -158,8 +159,8 @@ public static class Prism
 
                     var nestedRematch = new RematchOptions
                     {
-                        Cause = token + ',' + j,
-                        Reach = reach
+                        Cause = $"{token},{j}",
+                        Reach = reach,
                     };
                     MatchGrammar(text, tokenList, grammar, currentNode.Previous!, pos, nestedRematch);
 

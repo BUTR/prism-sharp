@@ -21,7 +21,6 @@ public class Grammar : IEnumerable<KeyValuePair<string, GrammarToken[]>>
 
     public GrammarToken[] this[string key]
     {
-        get => GrammarTokenMap[key].Val;
         set
         {
             var wrapVal = GrammarTokenMap.TryGetValue(key, out var oldVal)
@@ -29,30 +28,6 @@ public class Grammar : IEnumerable<KeyValuePair<string, GrammarToken[]>>
                 : new OrderVal(value, _count, ++_count);
             GrammarTokenMap[key] = wrapVal;
         }
-    }
-
-    private int Length => GrammarTokenMap.Count;
-
-    public void Remove(string key)
-    {
-        GrammarTokenMap.Remove(key);
-    }
-
-    public void InsertBefore(string key, Grammar grammar)
-    {
-        var beforeItem = GrammarTokenMap[key];
-        var order = beforeItem.Order;
-        var prevOrder = beforeItem.PrevOrder;
-        var icr = (order - prevOrder) / (grammar.Length + 1);
-        var newOrder = prevOrder;
-
-        foreach (var item in grammar)
-        {
-            // will override exists item
-            GrammarTokenMap[item.Key] = new OrderVal(item.Value, newOrder, newOrder += icr);
-        }
-
-        beforeItem.PrevOrder = newOrder;
     }
 
     private class OrderVal
@@ -69,16 +44,10 @@ public class Grammar : IEnumerable<KeyValuePair<string, GrammarToken[]>>
         }
     }
 
-    public IEnumerator<KeyValuePair<string, GrammarToken[]>> GetEnumerator()
-    {
-        return GrammarTokenMap.OrderBy(kv => kv.Value.Order)
-            .Select(kv =>
-                new KeyValuePair<string, GrammarToken[]>(kv.Key, kv.Value.Val))
-            .GetEnumerator();
-    }
+    public IEnumerator<KeyValuePair<string, GrammarToken[]>> GetEnumerator() => GrammarTokenMap
+        .OrderBy(kv => kv.Value.Order)
+        .Select(kv => new KeyValuePair<string, GrammarToken[]>(kv.Key, kv.Value.Val))
+        .GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
