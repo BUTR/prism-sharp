@@ -1,19 +1,43 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <PackageId>PrismSharp.Core</PackageId>
-        <Version>0.1.4</Version>
-        <Description>A porting of PrismJS to C# or .NET.</Description>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
-        <LangVersion>10</LangVersion>
-        <RepositoryUrl>https://github.com/tatwd/prism-sharp</RepositoryUrl>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-    </PropertyGroup>
+  <PropertyGroup>
+    <PackageId>PrismSharp.Core</PackageId>
+    <Version>0.1.4</Version>
+    <Description>A porting of PrismJS to C# or .NET.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Nullable>enable</Nullable>
+    <TargetFrameworks>net45;netstandard2.0;net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <RepositoryUrl>https://github.com/tatwd/prism-sharp</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <ImplicitUsings>true</ImplicitUsings>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <None Include="README.md" Pack="true" PackagePath="\"/>
-    </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\SimpleJSON\SimpleJSON.cs">
+      <Link>SimpleJSON.cs</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <CompilerVisibleProperty Include="MSBuildProjectFullPath" />
+    <CompilerVisibleProperty Include="OutputPath" />
+    <CompilerVisibleProperty Include="TargetFramework" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework) != 'net45'">
+    <ProjectReference Include="..\PrismSharp.SourceGenerator\PrismSharp.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework) == 'net45'">
+    <ProjectReference Include="..\PrismSharp.SourceGenerator\PrismSharp.SourceGenerator.csproj" SetTargetFramework="TargetFramework=netstandard2.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PrismSharp.RegEx">
+      <HintPath>$(OutputPath)\PrismSharp.RegEx.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

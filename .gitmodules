@@ -1,3 +1,6 @@
 [submodule "prismjs"]
 	path = prismjs
 	url = https://github.com/PrismJS/prism.git
+[submodule "SimpleJSON"]
+	path = SimpleJSON
+	url = https://github.com/Bunny83/SimpleJSON
