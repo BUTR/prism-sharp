@@ -253,13 +253,11 @@ public class RegexCompilerGenerator : ISourceGenerator
                 new XmlSerializer(typeof(Root)).Serialize(fsXml, root);
                 fsXml.Dispose();
 
-                var isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-
                 // File API is forbidden, but you're fine to execute a process? Really?
                 var psi = new ProcessStartInfo
                 {
-                    FileName = isLinux ? "mono" : "dotnet",
-                    Arguments = $"{tempPath} {tempPathXml}" ,
+                    FileName = tempPath,
+                    Arguments = tempPathXml ,
                     WorkingDirectory = outputDirectory,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
