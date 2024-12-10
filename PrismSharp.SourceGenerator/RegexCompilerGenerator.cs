@@ -91,7 +91,11 @@ public class RegexCompilerGenerator : ISourceGenerator
 
         if (targetFramework.StartsWith("net") && int.TryParse(targetFramework.Substring(3, 1), out var version))
         {
-            if (version >= 8)
+            if (version >= 9)
+            {
+                CompileNET90(languageDefinitions, languageDefinitionsHashBase64, dllPath, pdbPath);
+            }
+            else if (version >= 8)
             {
                 CompileNET80(languageDefinitions, languageDefinitionsHashBase64, dllPath, pdbPath);
             }
@@ -132,6 +136,43 @@ public class RegexCompilerGenerator : ISourceGenerator
         .Select(assembly => assembly.GetType(name))
         .OfType<Type>()
         .FirstOrDefault();
+
+    private static void CompileNET90(KeyValuePair<string, string>[] languageDefinitions, string languageDefinitionsHashBase64, string dllPath, string pdbPath)
+    {
+        var list = GenerateLanguageRegularExpressions(languageDefinitions, languageDefinitionsHashBase64).ToArray();
+
+        var compilation = CSharpCompilation.Create(
+            "PrismSharp.RegEx",
+            list.Select(x => CSharpSyntaxTree.ParseText(x.Value, path: $"{x.Key}.cs", encoding: Encoding.UTF8)),
+            Net90.References.All,
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        //new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary).WithPlatform(Platform.AnyCpu).WithOptimizationLevel(OptimizationLevel.Release));
+
+        //var sourceGenDriver = CSharpGeneratorDriver.Create(new System.Text.RegularExpressions.Generator.RegexGenerator());
+        var type = ByName("System.Text.RegularExpressions.Generator.RegexGenerator")!;
+        var sourceGenDriver = CSharpGeneratorDriver.Create((IIncrementalGenerator)Activator.CreateInstance(type)!);
+        sourceGenDriver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var diagnostics);
+
+        using var dllStream = new MemoryStream();
+        using var pdbStream = new MemoryStream();
+        var emitResult = outputCompilation.Emit(dllStream, pdbStream);
+        if (!emitResult.Success)
+        {
+            // emitResult.Diagnostics
+        }
+
+        dllStream.Seek(0, SeekOrigin.Begin);
+        using (var fileStream = new FileStream(dllPath, FileMode.Create, FileAccess.Write))
+        {
+            dllStream.CopyTo(fileStream);
+        }
+
+        pdbStream.Seek(0, SeekOrigin.Begin);
+        using (var fileStream = new FileStream(pdbPath, FileMode.Create, FileAccess.Write))
+        {
+            pdbStream.CopyTo(fileStream);
+        }
+    }
 
     private static void CompileNET80(KeyValuePair<string, string>[] languageDefinitions, string languageDefinitionsHashBase64, string dllPath, string pdbPath)
     {

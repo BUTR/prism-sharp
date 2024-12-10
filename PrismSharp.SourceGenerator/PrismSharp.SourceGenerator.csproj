@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net8.0;net9.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Basic.Reference.Assemblies.Net90" Version="1.7.9" GeneratePathProperty="true" />
     <PackageReference Include="Basic.Reference.Assemblies.Net80" Version="1.7.9" GeneratePathProperty="true" />
     <PackageReference Include="Basic.Reference.Assemblies.NetStandard20" Version="1.7.9" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" PrivateAssets="all" />
@@ -27,6 +28,7 @@
     <ItemGroup>
       <TargetPathWithTargetPlatformMoniker Include="$(PkgBasic_Reference_Assemblies_NetStandard20)\lib\netstandard2.0\Basic.Reference.Assemblies.NetStandard20.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PkgBasic_Reference_Assemblies_Net80)\lib\netstandard2.0\Basic.Reference.Assemblies.Net80.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgBasic_Reference_Assemblies_Net90)\lib\netstandard2.0\Basic.Reference.Assemblies.Net90.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PkgJint)\lib\netstandard2.0\Jint.dll" IncludeRuntimeDependency="false" />
       <TargetPathWithTargetPlatformMoniker Include="$(PkgAcornima)\lib\netstandard2.0\Acornima.dll" IncludeRuntimeDependency="false" />
     </ItemGroup>
