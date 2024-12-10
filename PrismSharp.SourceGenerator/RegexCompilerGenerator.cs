@@ -255,8 +255,8 @@ public class RegexCompilerGenerator : ISourceGenerator
                 // File API is forbidden, but you're fine to execute a process? Really?
                 var psi = new ProcessStartInfo
                 {
-                    FileName = tempPath,
-                    Arguments = tempPathXml,
+                    FileName = "dotnet",
+                    Arguments = $"{tempPath} {tempPathXml}" ,
                     WorkingDirectory = outputDirectory,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
