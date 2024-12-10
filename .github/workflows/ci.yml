@@ -36,8 +36,19 @@ jobs:
 
         dotnet pack PrismSharp.Core/PrismSharp.Core.csproj --configuration Release -o "./packages";
       shell: pwsh
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: packages
+        path: "./packages"
         
 
+  publish:
+    runs-on: ubuntu-latest
+    - uses: actions/download-artifact@v4
+      with:
+        name: packages
+    
     - name: Push to NuGet
       run: dotnet nuget push "./packages/*.nupkg" -k ${{secrets.NUGET_API_KEY}} -s https://www.nuget.org
       shell: pwsh
