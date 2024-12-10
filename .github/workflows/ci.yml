@@ -17,10 +17,22 @@ jobs:
 
     - name: Pack
       run: >-
+        dotnet build PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release;
+
+        mkdir regex;
+        mkdir -p regex/netstandard2.0;
+        mkdir -p regex/net45;
+        mkdir -p regex/net8.0;
+        mkdir -p regex/net9.0;
+        dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -- "$PWD/regex/netstandard2.0" netstandard2.0;
+        dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -- "$PWD/regex/net45" net45;
+        dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -- "$PWD/regex/net8.0" net8.0;
+        dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -- "$PWD/regex/net9.0" net9.0;
+
         dotnet build PrismSharp.RegExCompiler/PrismSharp.RegExCompiler.csproj --configuration Release;
         dotnet build PrismSharp.SourceGenerator/PrismSharp.SourceGenerator.csproj --configuration Release;
         dotnet build PrismSharp.Core/PrismSharp.Core.csproj --configuration Release;
-        
+
         dotnet pack PrismSharp.Core/PrismSharp.Core.csproj --configuration Release -o "./packages";
       shell: pwsh
         

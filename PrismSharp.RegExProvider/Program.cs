@@ -1,19 +1,19 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
 using Basic.Reference.Assemblies;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using PrismSharp.SourceGenerator;
 
-namespace PrismSharp.SourceGenerator;
+namespace PrismSharp.RegExProvider;
 
 [XmlRoot("Root")]
 public class Root
@@ -40,23 +40,12 @@ public class PatternEntry
     public string Pattern { get; set; } = default!;
 }
 
-[Generator]
-public class RegexCompilerGenerator : ISourceGenerator
+public static class Program
 {
-    public void Initialize(GeneratorInitializationContext context) { }
-
-    public void Execute(GeneratorExecutionContext context)
+    public static void Main(string[] args)
     {
-        if (!context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.outputpath", out var path))
-            return;
-
-        if (!context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.msbuildprojectfullpath", out var csPath))
-            return;
-
-        if (!context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.targetframework", out var targetFramework))
-            return;
-
-        var fullPath = Path.Combine(Path.GetDirectoryName(csPath)!, path);
+        var fullPath = args[0];
+        var targetFramework = args[1];
 
         var languageDefinitions = LanguageDeclarationGenerator.GetFlattedLanguageDefinitions().ToArray();
         var languageDefinitionsHash = SHA256Hash(languageDefinitions.SelectMany(x => SHA256Hash(Encoding.UTF8.GetBytes(x.Value))).ToArray());
@@ -65,7 +54,6 @@ public class RegexCompilerGenerator : ISourceGenerator
         var dllPath = Path.Combine(fullPath, "PrismSharp.RegEx.dll");
         var pdbPath = Path.Combine(fullPath, "PrismSharp.RegEx.pdb");
 
-#pragma warning disable RS1035
         if (File.Exists(dllPath) && File.Exists(pdbPath))
         {
             try
@@ -88,7 +76,6 @@ public class RegexCompilerGenerator : ISourceGenerator
             }
             catch (Exception) { /* ignore */ }
         }
-#pragma warning restore RS1035
 
         if (targetFramework.StartsWith("net") && int.TryParse(targetFramework.Substring(3, 1), out var version))
         {
@@ -138,86 +125,11 @@ public class RegexCompilerGenerator : ISourceGenerator
         .OfType<Type>()
         .FirstOrDefault();
 
-    private static void CompileNET90(KeyValuePair<string, string>[] languageDefinitions, string languageDefinitionsHashBase64, string dllPath, string pdbPath)
-    {
-        var list = GenerateLanguageRegularExpressions(languageDefinitions, languageDefinitionsHashBase64).ToArray();
-
-        var compilation = CSharpCompilation.Create(
-            "PrismSharp.RegEx",
-            list.Select(x => CSharpSyntaxTree.ParseText(x.Value, path: $"{x.Key}.cs", encoding: Encoding.UTF8)),
-            Net90.References.All,
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-        //new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary).WithPlatform(Platform.AnyCpu).WithOptimizationLevel(OptimizationLevel.Release));
-
-        //var sourceGenDriver = CSharpGeneratorDriver.Create(new System.Text.RegularExpressions.Generator.RegexGenerator());
-        var type = ByName("System.Text.RegularExpressions.Generator.RegexGenerator")!;
-        var sourceGenDriver = CSharpGeneratorDriver.Create((IIncrementalGenerator)Activator.CreateInstance(type)!);
-        sourceGenDriver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var diagnostics);
-
-        using var dllStream = new MemoryStream();
-        using var pdbStream = new MemoryStream();
-        var emitResult = outputCompilation.Emit(dllStream, pdbStream);
-        if (!emitResult.Success)
-        {
-            // emitResult.Diagnostics
-        }
-
-        dllStream.Seek(0, SeekOrigin.Begin);
-        using (var fileStream = new FileStream(dllPath, FileMode.Create, FileAccess.Write))
-        {
-            dllStream.CopyTo(fileStream);
-        }
-
-        pdbStream.Seek(0, SeekOrigin.Begin);
-        using (var fileStream = new FileStream(pdbPath, FileMode.Create, FileAccess.Write))
-        {
-            pdbStream.CopyTo(fileStream);
-        }
-    }
-
-    private static void CompileNET80(KeyValuePair<string, string>[] languageDefinitions, string languageDefinitionsHashBase64, string dllPath, string pdbPath)
-    {
-        var list = GenerateLanguageRegularExpressions(languageDefinitions, languageDefinitionsHashBase64).ToArray();
-
-        var compilation = CSharpCompilation.Create(
-            "PrismSharp.RegEx",
-            list.Select(x => CSharpSyntaxTree.ParseText(x.Value, path: $"{x.Key}.cs", encoding: Encoding.UTF8)),
-            Net80.References.All,
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-        //new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary).WithPlatform(Platform.AnyCpu).WithOptimizationLevel(OptimizationLevel.Release));
-
-        //var sourceGenDriver = CSharpGeneratorDriver.Create(new System.Text.RegularExpressions.Generator.RegexGenerator());
-        var type = ByName("System.Text.RegularExpressions.Generator.RegexGenerator")!;
-        var sourceGenDriver = CSharpGeneratorDriver.Create((IIncrementalGenerator)Activator.CreateInstance(type)!);
-        sourceGenDriver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var diagnostics);
-
-        using var dllStream = new MemoryStream();
-        using var pdbStream = new MemoryStream();
-        var emitResult = outputCompilation.Emit(dllStream, pdbStream);
-        if (!emitResult.Success)
-        {
-            // emitResult.Diagnostics
-        }
-
-        dllStream.Seek(0, SeekOrigin.Begin);
-        using (var fileStream = new FileStream(dllPath, FileMode.Create, FileAccess.Write))
-        {
-            dllStream.CopyTo(fileStream);
-        }
-
-        pdbStream.Seek(0, SeekOrigin.Begin);
-        using (var fileStream = new FileStream(pdbPath, FileMode.Create, FileAccess.Write))
-        {
-            pdbStream.CopyTo(fileStream);
-        }
-    }
-
-#pragma warning disable RS1035
-    private static void CompileNET45(KeyValuePair<string, string>[] languageDefinitions, string outputDirectory)
+        private static void CompileNET45(KeyValuePair<string, string>[] languageDefinitions, string outputDirectory)
     {
         // The generated Regex seem to work on any platform, but the generator itself
         // only works on .NET Framework, so we launch a separate process to generate the Regex
-        var asm = typeof(RegexCompilerGenerator).Assembly.GetManifestResourceStream("PrismSharp.RegExCompiler.exe")!;
+        var asm = typeof(Program).Assembly.GetManifestResourceStream("PrismSharp.RegExCompiler.exe")!;
         var tempPath = $"{Path.GetTempFileName()}.exe";
         var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write);
         try
@@ -279,22 +191,64 @@ public class RegexCompilerGenerator : ISourceGenerator
             File.Delete(tempPath);
         }
     }
-#pragma warning restore RS1035
 
-    private static void CompileNETStandard20(KeyValuePair<string, string>[] languageDefinitions, string languageDefinitionsHashBase64, string dllPath, string pdbPath)
+
+    private static void CompileNET90(KeyValuePair<string, string>[] languageDefinitions, string languageDefinitionsHashBase64, string dllPath, string pdbPath)
     {
-        var list = GenerateLanguageRegularExpressionsSimple(languageDefinitions, languageDefinitionsHashBase64).ToArray();
+        var list = GenerateLanguageRegularExpressions(languageDefinitions, languageDefinitionsHashBase64).ToArray();
 
         var compilation = CSharpCompilation.Create(
             "PrismSharp.RegEx",
             list.Select(x => CSharpSyntaxTree.ParseText(x.Value, path: $"{x.Key}.cs", encoding: Encoding.UTF8)),
-            NetStandard20.References.All,
+            Net90.References.All,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
         //new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary).WithPlatform(Platform.AnyCpu).WithOptimizationLevel(OptimizationLevel.Release));
 
+        //var sourceGenDriver = CSharpGeneratorDriver.Create(new System.Text.RegularExpressions.Generator.RegexGenerator());
+        var type = ByName("System.Text.RegularExpressions.Generator.RegexGenerator")!;
+        var sourceGenDriver = CSharpGeneratorDriver.Create((IIncrementalGenerator)Activator.CreateInstance(type)!);
+        sourceGenDriver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var diagnostics);
+
         using var dllStream = new MemoryStream();
         using var pdbStream = new MemoryStream();
-        var emitResult = compilation.Emit(dllStream, pdbStream);
+        var emitResult = outputCompilation.Emit(dllStream, pdbStream);
+        if (!emitResult.Success)
+        {
+            // emitResult.Diagnostics
+        }
+
+        dllStream.Seek(0, SeekOrigin.Begin);
+        using (var fileStream = new FileStream(dllPath, FileMode.Create, FileAccess.Write))
+        {
+            dllStream.CopyTo(fileStream);
+        }
+
+        pdbStream.Seek(0, SeekOrigin.Begin);
+        using (var fileStream = new FileStream(pdbPath, FileMode.Create, FileAccess.Write))
+        {
+            pdbStream.CopyTo(fileStream);
+        }
+    }
+
+    private static void CompileNET80(KeyValuePair<string, string>[] languageDefinitions, string languageDefinitionsHashBase64, string dllPath, string pdbPath)
+    {
+        var list = GenerateLanguageRegularExpressions(languageDefinitions, languageDefinitionsHashBase64).ToArray();
+
+        var compilation = CSharpCompilation.Create(
+            "PrismSharp.RegEx",
+            list.Select(x => CSharpSyntaxTree.ParseText(x.Value, path: $"{x.Key}.cs", encoding: Encoding.UTF8)),
+            Net80.References.All,
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        //new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary).WithPlatform(Platform.AnyCpu).WithOptimizationLevel(OptimizationLevel.Release));
+
+        //var sourceGenDriver = CSharpGeneratorDriver.Create(new System.Text.RegularExpressions.Generator.RegexGenerator());
+        var type = ByName("System.Text.RegularExpressions.Generator.RegexGenerator")!;
+        var sourceGenDriver = CSharpGeneratorDriver.Create((IIncrementalGenerator)Activator.CreateInstance(type)!);
+        sourceGenDriver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var diagnostics);
+
+        using var dllStream = new MemoryStream();
+        using var pdbStream = new MemoryStream();
+        var emitResult = outputCompilation.Emit(dllStream, pdbStream);
         if (!emitResult.Success)
         {
             // emitResult.Diagnostics

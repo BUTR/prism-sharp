@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
+   
+    <PackageReference Include="Jint" Version="4.1.0" />
+
+    <PackageReference Include="Basic.Reference.Assemblies.Net90" Version="1.7.9" />
+    <PackageReference Include="Basic.Reference.Assemblies.Net80" Version="1.7.9" />
+    <PackageReference Include="Basic.Reference.Assemblies.NetStandard20" Version="1.7.9" />
+    
+    <ProjectReference Include="..\PrismSharp.RegExCompiler\PrismSharp.RegExCompiler.csproj" />
+    <EmbeddedResource Include="..\PrismSharp.RegExCompiler\bin\$(Configuration)\net45\PrismSharp.RegExCompiler.exe" >
+      <Link>PrismSharp.RegExCompiler.exe</Link>
+      <LogicalName>PrismSharp.RegExCompiler.exe</LogicalName>
+    </EmbeddedResource>
+
+
+    <Compile Include="..\SimpleJSON\SimpleJSON.cs">
+      <Link>SimpleJSON.cs</Link>
+    </Compile>
+    <Compile Include="..\PrismSharp.SourceGenerator\Flatted.cs">
+      <Link>Flatted.cs</Link>
+    </Compile>
+    <Compile Include="..\PrismSharp.SourceGenerator\GrammarTokenParser.cs">
+      <Link>GrammarTokenParser.cs</Link>
+    </Compile>
+    <Compile Include="..\PrismSharp.SourceGenerator\LanguageDeclarationGenerator.cs">
+      <Link>LanguageDeclarationGenerator.cs</Link>
+    </Compile>
+
+    <EmbeddedResource Include="..\prismjs\prism.js">
+      <Link>prismjs\%(FileName)%(Extension)</Link>
+      <LogicalName>prismjs\%(FileName)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PrismSharp.SourceGenerator\prismjs\prism-nasm.js">
+      <Link>prismjs\%(FileName)%(Extension)</Link>
+      <LogicalName>prismjs\%(FileName)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\prismjs\components\prism-cil.js">
+      <Link>prismjs\%(FileName)%(Extension)</Link>
+      <LogicalName>prismjs\%(FileName)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\prismjs\components\prism-csharp.js">
+      <Link>prismjs\%(FileName)%(Extension)</Link>
+      <LogicalName>prismjs\%(FileName)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
