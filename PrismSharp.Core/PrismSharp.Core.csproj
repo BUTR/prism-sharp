@@ -29,9 +29,10 @@
 
     <Reference Include="..\regex\$(TargetFramework)\PrismSharp.RegEx.dll"  />
     <ProjectReference Include="..\PrismSharp.SourceGenerator\PrismSharp.SourceGenerator.csproj"
+                      SetTargetFramework="TargetFramework=netstandard2.0"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="false"
-                      Pack="false"  />
+                      Pack="false" />
   </ItemGroup>
 
 </Project>
