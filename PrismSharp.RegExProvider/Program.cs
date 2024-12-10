@@ -204,9 +204,7 @@ public static class Program
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
         //new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary).WithPlatform(Platform.AnyCpu).WithOptimizationLevel(OptimizationLevel.Release));
 
-        //var sourceGenDriver = CSharpGeneratorDriver.Create(new System.Text.RegularExpressions.Generator.RegexGenerator());
-        var type = ByName("System.Text.RegularExpressions.Generator.RegexGenerator")!;
-        var sourceGenDriver = CSharpGeneratorDriver.Create((IIncrementalGenerator)Activator.CreateInstance(type)!);
+        var sourceGenDriver = CSharpGeneratorDriver.Create(new System.Text.RegularExpressions.Generator.RegexGenerator());
         sourceGenDriver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var diagnostics);
 
         using var dllStream = new MemoryStream();
@@ -241,9 +239,7 @@ public static class Program
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
         //new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary).WithPlatform(Platform.AnyCpu).WithOptimizationLevel(OptimizationLevel.Release));
 
-        //var sourceGenDriver = CSharpGeneratorDriver.Create(new System.Text.RegularExpressions.Generator.RegexGenerator());
-        var type = ByName("System.Text.RegularExpressions.Generator.RegexGenerator")!;
-        var sourceGenDriver = CSharpGeneratorDriver.Create((IIncrementalGenerator)Activator.CreateInstance(type)!);
+        var sourceGenDriver = CSharpGeneratorDriver.Create(new System.Text.RegularExpressions.Generator.RegexGenerator());
         sourceGenDriver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var diagnostics);
 
         using var dllStream = new MemoryStream();

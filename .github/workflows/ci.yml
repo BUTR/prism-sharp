@@ -26,10 +26,10 @@ jobs:
         mkdir -p regex/net45;
         mkdir -p regex/net8.0;
         mkdir -p regex/net9.0;
-        dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -- "$PWD/regex/netstandard2.0" netstandard2.0;
-        dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -- "$PWD/regex/net45" net45;
-        dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -- "$PWD/regex/net8.0" net8.0;
-        dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -- "$PWD/regex/net9.0" net9.0;
+        dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -f net9.0 -- "$PWD/regex/netstandard2.0" netstandard2.0;
+        dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -f net9.0 -- "$PWD/regex/net45" net45;
+        dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -f net8.0 -- "$PWD/regex/net8.0" net8.0;
+        dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -f net9.0 -- "$PWD/regex/net9.0" net9.0;
 
         dotnet build PrismSharp.SourceGenerator/PrismSharp.SourceGenerator.csproj --configuration Release;
         dotnet build PrismSharp.Core/PrismSharp.Core.csproj --configuration Release;

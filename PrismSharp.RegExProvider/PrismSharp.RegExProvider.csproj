@@ -1,13 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <ItemGroup Condition="$(TargetFramework) == 'net9.0'">
+    <PackageReference Include="Microsoft.NETCore.App.Ref" Version="9.0.0" PrivateAssets="all" IncludeAssets="none" GeneratePathProperty="true" />
+    <Reference Include="$(PkgMicrosoft_NETCore_App_Ref)\analyzers\dotnet\cs\System.Text.RegularExpressions.Generator.dll" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
+    <PackageReference Include="Microsoft.NETCore.App.Ref" Version="8.0.0" PrivateAssets="all" IncludeAssets="none" GeneratePathProperty="true" />
+    <Reference Include="$(PkgMicrosoft_NETCore_App_Ref)\analyzers\dotnet\cs\System.Text.RegularExpressions.Generator.dll" />
+  </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
    
