@@ -45,7 +45,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    depends-on: ["build"]
+    needs: ["build"]
     steps:
     - uses: actions/download-artifact@v4
       with:
