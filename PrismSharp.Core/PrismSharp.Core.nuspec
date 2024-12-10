@@ -2,6 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>BUTR.PrismSharp.Core</id>
+    <authors>tatwd, BUTR</authors>
     <version>$version$</version>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
