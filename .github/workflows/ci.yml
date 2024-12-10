@@ -17,6 +17,8 @@ jobs:
 
     - name: Pack
       run: >-
+        dotnet build PrismSharp.RegExCompiler/PrismSharp.RegExCompiler.csproj --configuration Release;
+
         dotnet build PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release;
 
         mkdir regex;
@@ -29,7 +31,6 @@ jobs:
         dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -- "$PWD/regex/net8.0" net8.0;
         dotnet run --project PrismSharp.RegExProvider/PrismSharp.RegExProvider.csproj --configuration Release -- "$PWD/regex/net9.0" net9.0;
 
-        dotnet build PrismSharp.RegExCompiler/PrismSharp.RegExCompiler.csproj --configuration Release;
         dotnet build PrismSharp.SourceGenerator/PrismSharp.SourceGenerator.csproj --configuration Release;
         dotnet build PrismSharp.Core/PrismSharp.Core.csproj --configuration Release;
 

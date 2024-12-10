@@ -26,41 +26,12 @@
     <CompilerVisibleProperty Include="MSBuildProjectFullPath" />
     <CompilerVisibleProperty Include="OutputPath" />
     <CompilerVisibleProperty Include="TargetFramework" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+
+    <Reference Include="..\regex\$(TargetFramework)\PrismSharp.RegEx.dll"  />
     <ProjectReference Include="..\PrismSharp.SourceGenerator\PrismSharp.SourceGenerator.csproj"
-                      SetTargetFramework="TargetFramework=netstandard2.0"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="false"
                       Pack="false"  />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework) == 'net45'">
-    <ProjectReference Include="..\PrismSharp.SourceGenerator\PrismSharp.SourceGenerator.csproj"
-                      SetTargetFramework="TargetFramework=netstandard2.0"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false"
-                      Pack="false" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
-    <ProjectReference Include="..\PrismSharp.SourceGenerator\PrismSharp.SourceGenerator.csproj"
-                      SetTargetFramework="TargetFramework=net8.0"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false"
-                      Pack="false"  />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework) == 'net9.0'">
-    <ProjectReference Include="..\PrismSharp.SourceGenerator\PrismSharp.SourceGenerator.csproj"
-                      SetTargetFramework="TargetFramework=net9.0"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false"
-                      Pack="false"  />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="PrismSharp.RegEx">
-      <HintPath>$(OutputPath)\PrismSharp.RegEx.dll</HintPath>
-      <Private>false</Private>
-      <Pack>true</Pack>
-    </Reference>
   </ItemGroup>
 
 </Project>
