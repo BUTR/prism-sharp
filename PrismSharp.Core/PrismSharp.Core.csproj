@@ -6,7 +6,7 @@
     <Description>A porting of PrismJS to C# or .NET.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Nullable>enable</Nullable>
-    <TargetFrameworks>net45;netstandard2.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard2.0;net8.0;net9.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <RepositoryUrl>https://github.com/tatwd/prism-sharp</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -28,15 +28,39 @@
     <CompilerVisibleProperty Include="OutputPath" />
     <CompilerVisibleProperty Include="TargetFramework" />
   </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework) != 'net45'">
-    <ProjectReference Include="..\PrismSharp.SourceGenerator\PrismSharp.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  <ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+    <ProjectReference Include="..\PrismSharp.SourceGenerator\PrismSharp.SourceGenerator.csproj"
+                      SetTargetFramework="TargetFramework=netstandard2.0"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"
+                      Pack="false"  />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework) == 'net45'">
-    <ProjectReference Include="..\PrismSharp.SourceGenerator\PrismSharp.SourceGenerator.csproj" SetTargetFramework="TargetFramework=netstandard2.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\PrismSharp.SourceGenerator\PrismSharp.SourceGenerator.csproj"
+                      SetTargetFramework="TargetFramework=netstandard2.0"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"
+                      Pack="false" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
+    <ProjectReference Include="..\PrismSharp.SourceGenerator\PrismSharp.SourceGenerator.csproj"
+                      SetTargetFramework="TargetFramework=net8.0"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"
+                      Pack="false"  />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework) == 'net9.0'">
+    <ProjectReference Include="..\PrismSharp.SourceGenerator\PrismSharp.SourceGenerator.csproj"
+                      SetTargetFramework="TargetFramework=net9.0"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"
+                      Pack="false"  />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PrismSharp.RegEx">
       <HintPath>$(OutputPath)\PrismSharp.RegEx.dll</HintPath>
+      <Private>false</Private>
+      <Pack>true</Pack>
     </Reference>
   </ItemGroup>
 

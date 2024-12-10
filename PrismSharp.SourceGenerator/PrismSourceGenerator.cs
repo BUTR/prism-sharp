@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -9,62 +8,65 @@ using Microsoft.CodeAnalysis.Text;
 namespace PrismSharp.SourceGenerator;
 
 [Generator]
-[ExcludeFromCodeCoverage]
-public class PrismSourceGenerator : ISourceGenerator
+public class PrismSourceGenerator : IIncrementalGenerator
 {
-    public void Initialize(GeneratorInitializationContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-    }
+        var languageSourcesProvider = context.CompilationProvider
+            .SelectMany((compilation, cancellationToken) => GenerateLanguageSources());
 
-    public void Execute(GeneratorExecutionContext context)
-    {
-        var languageSourceNames = new List<string>();
-        foreach (var languageSource in GenerateLanguageSources())
+        var combinedSourcesProvider = languageSourcesProvider.Collect();
+
+        context.RegisterSourceOutput(combinedSourcesProvider, (ctx, languageSources) =>
         {
-            languageSourceNames.Add(languageSource.Key);
-            context.AddSource($"GrammarProvider.{languageSource.Key}.cs", SourceText.From(languageSource.Value, Encoding.UTF8));
-        }
+            var languageSourceNames = new List<string>();
 
-        var sb = new StringBuilder();
-        sb.AppendLine($$"""
-                        namespace PrismSharp.Core;
+            foreach (var languageSource in languageSources)
+            {
+                languageSourceNames.Add(languageSource.Key);
+                ctx.AddSource($"GrammarProvider.{languageSource.Key}.cs", SourceText.From(languageSource.Value, Encoding.UTF8));
+            }
 
-                        public static class LanguageGrammars
-                        {
-                            private static readonly IDictionary<string, Lazy<Grammar>> Definitions;
-
-                            static LanguageGrammars()
-                            {
-                                Definitions = new Dictionary<string, Lazy<Grammar>>(16);
-
-                        """);
-        foreach (var languageSourceName in languageSourceNames)
-        {
+            var sb = new StringBuilder();
             sb.AppendLine($$"""
+                            namespace PrismSharp.Core;
+
+                            public static class LanguageGrammars
+                            {
+                                private static readonly IDictionary<string, Lazy<Grammar>> Definitions;
+
+                                static LanguageGrammars()
+                                {
+                                    Definitions = new Dictionary<string, Lazy<Grammar>>(16);
+
+                            """);
+            foreach (var languageSourceName in languageSourceNames)
+            {
+                sb.AppendLine($$"""
                                     Definitions.Add("{{languageSourceName}}", new Lazy<Grammar>(RegEx.{{languageSourceName}}.GrammarProvider.Create));
-                            """);
-        }
-        sb.AppendLine($$"""
-                            }
-
-                            private static Grammar GetGrammar(string language)
-                            {
-                                Definitions.TryGetValue(language, out var grammar);
-                                return grammar?.Value ?? new Grammar();
-                            }
-                        """);
-        foreach (var languageSourceName in languageSourceNames)
-        {
+                                """);
+            }
             sb.AppendLine($$"""
-                                public static Grammar {{languageSourceName}} => GetGrammar("{{languageSourceName}}");
-                            """);
-        }
-        sb.AppendLine($$"""
-                        }
-                        """);
-        context.AddSource("LanguageGrammars.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
-    }
+                                }
 
+                                private static Grammar GetGrammar(string language)
+                                {
+                                    Definitions.TryGetValue(language, out var grammar);
+                                    return grammar?.Value ?? new Grammar();
+                                }
+                            """);
+            foreach (var languageSourceName in languageSourceNames)
+            {
+                sb.AppendLine($$"""
+                                    public static Grammar {{languageSourceName}} => GetGrammar("{{languageSourceName}}");
+                                """);
+            }
+            sb.AppendLine($$"""
+                            }
+                            """);
+            ctx.AddSource("LanguageGrammars.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
+        });
+    }
 
     private static IEnumerable<KeyValuePair<string, string>> GenerateLanguageSources()
     {
