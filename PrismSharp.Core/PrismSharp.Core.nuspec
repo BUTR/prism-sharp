@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>BUTR.PrismSharp.Core</id>
+    <version>$version$</version>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <description>A porting of PrismJS to C# or .NET. Fork for BUTR use.</description>
+  </metadata>
+  <files>
+    <file src="bin\$configuration$\netstandard2.0\PrismSharp.Core.dll" target="lib\netstandard2.0\PrismSharp.Core.dll" />
+    <file src="bin\$configuration$\netstandard2.0\PrismSharp.Core.pdb" target="lib\netstandard2.0\PrismSharp.Core.pdb" />
+    <file src="bin\$configuration$\netstandard2.0\PrismSharp.RegEx.dll" target="lib\netstandard2.0\PrismSharp.RegEx.dll" />
+    
+    <file src="bin\$configuration$\net45\PrismSharp.Core.dll" target="lib\net45\PrismSharp.Core.dll" />
+    <file src="bin\$configuration$\net45\PrismSharp.Core.pdb" target="lib\net45\PrismSharp.Core.pdb" />
+    <file src="bin\$configuration$\net45\PrismSharp.RegEx.dll" target="lib\net45\PrismSharp.RegEx.dll" />
+    
+    <file src="bin\$configuration$\net8.0\PrismSharp.Core.dll" target="lib\net8.0\PrismSharp.Core.dll" />
+    <file src="bin\$configuration$\net8.0\PrismSharp.Core.pdb" target="lib\net8.0\PrismSharp.Core.pdb" />
+    <file src="bin\$configuration$\net8.0\PrismSharp.RegEx.dll" target="lib\net8.0\PrismSharp.RegEx.dll" />
+    <file src="bin\$configuration$\net8.0\PrismSharp.RegEx.pdb" target="lib\net8.0\PrismSharp.RegEx.pdb" />
+    
+    <file src="bin\$configuration$\net9.0\PrismSharp.Core.dll" target="lib\net9.0\PrismSharp.Core.dll" />
+    <file src="bin\$configuration$\net9.0\PrismSharp.Core.pdb" target="lib\net9.0\PrismSharp.Core.pdb" />
+    <file src="bin\$configuration$\net9.0\PrismSharp.RegEx.dll" target="lib\net9.0\PrismSharp.RegEx.dll" />
+    <file src="bin\$configuration$\net9.0\PrismSharp.RegEx.pdb" target="lib\net9.0\PrismSharp.RegEx.pdb" />
+    
+    <file src="README.md" target="README.md" />
+  </files>
+</package>

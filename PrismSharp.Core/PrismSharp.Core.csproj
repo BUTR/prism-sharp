@@ -1,22 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageId>PrismSharp.Core</PackageId>
-    <Version>0.1.4</Version>
-    <Description>A porting of PrismJS to C# or .NET.</Description>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Nullable>enable</Nullable>
     <TargetFrameworks>net45;netstandard2.0;net8.0;net9.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
-    <RepositoryUrl>https://github.com/tatwd/prism-sharp</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Nullable>enable</Nullable>
     <ImplicitUsings>true</ImplicitUsings>
+
+    <GITHUB_RUN_NUMBER Condition="$(GITHUB_RUN_NUMBER) == ''">0</GITHUB_RUN_NUMBER>
+    <Version>1.0.0.$(GITHUB_RUN_NUMBER)</Version>
+
+    <PackageOutputPath>$(MSBuildThisFileDirectory)..\packages\</PackageOutputPath>
+    <PackBuildOutput>true</PackBuildOutput>
+    
+    <NuspecFile>$(MSBuildThisFileDirectory)PrismSharp.Core.nuspec</NuspecFile>
+    <NuspecProperties>Version=$(Version);Configuration=$(Configuration)</NuspecProperties>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\"/>
-  </ItemGroup>
-  
   <ItemGroup>
     <Compile Include="..\SimpleJSON\SimpleJSON.cs">
       <Link>SimpleJSON.cs</Link>
