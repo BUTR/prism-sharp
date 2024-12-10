@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
@@ -252,10 +253,12 @@ public class RegexCompilerGenerator : ISourceGenerator
                 new XmlSerializer(typeof(Root)).Serialize(fsXml, root);
                 fsXml.Dispose();
 
+                var isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+
                 // File API is forbidden, but you're fine to execute a process? Really?
                 var psi = new ProcessStartInfo
                 {
-                    FileName = "dotnet",
+                    FileName = isLinux ? "mono" : "dotnet",
                     Arguments = $"{tempPath} {tempPathXml}" ,
                     WorkingDirectory = outputDirectory,
                     RedirectStandardOutput = true,
