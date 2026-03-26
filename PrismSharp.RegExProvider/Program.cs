@@ -47,7 +47,10 @@ public static class Program
         var fullPath = args[0];
         var targetFramework = args[1];
 
+        var allResources = typeof(LanguageDeclarationGenerator).Assembly.GetManifestResourceNames();
+        Console.Error.WriteLine($"All embedded resources: {string.Join(", ", allResources)}");
         var languageDefinitions = LanguageDeclarationGenerator.GetFlattedLanguageDefinitions().ToArray();
+        Console.Error.WriteLine($"Languages found: {string.Join(", ", languageDefinitions.Select(x => x.Key))}");
         var languageDefinitionsHash = SHA256Hash(languageDefinitions.SelectMany(x => SHA256Hash(Encoding.UTF8.GetBytes(x.Value))).ToArray());
         var languageDefinitionsHashBase64 = Convert.ToBase64String(languageDefinitionsHash);
 
@@ -212,7 +215,8 @@ public static class Program
         var emitResult = outputCompilation.Emit(dllStream, pdbStream);
         if (!emitResult.Success)
         {
-            // emitResult.Diagnostics
+            foreach (var diag in emitResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error))
+                Console.Error.WriteLine(diag);
         }
 
         dllStream.Seek(0, SeekOrigin.Begin);

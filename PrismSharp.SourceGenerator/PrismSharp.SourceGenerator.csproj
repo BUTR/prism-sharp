@@ -41,6 +41,14 @@
       <Link>prismjs\%(FileName)%(Extension)</Link>
       <LogicalName>prismjs\%(FileName)%(Extension)</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="prismjs\prism-registers.js">
+      <Link>prismjs\%(FileName)%(Extension)</Link>
+      <LogicalName>prismjs\%(FileName)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="prismjs\prism-stackmemory.js">
+      <Link>prismjs\%(FileName)%(Extension)</Link>
+      <LogicalName>prismjs\%(FileName)%(Extension)</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\prismjs\components\prism-cil.js">
       <Link>prismjs\%(FileName)%(Extension)</Link>
       <LogicalName>prismjs\%(FileName)%(Extension)</LogicalName>
