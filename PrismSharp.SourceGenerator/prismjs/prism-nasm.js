@@ -5,10 +5,12 @@
 // The 'instruction' token is intentionally last as a catch-all for any
 // unmatched word — in this format, that's always a mnemonic.
 Prism.languages.nasm = {
-    // Address at line start: "000A ", "0032 " — always followed by 2+ spaces (%-10s format).
-    // Uses lookahead instead of ^/m since PrismSharp may not support the multiline flag.
+    // Address at line start: "000A ", "0032 ".
+    // PrismSharp's JS→C# pipeline strips regex flags (toJSON returns .source only),
+    // so /m doesn't work. Instead, use lookbehind with (^|\n) to anchor to line start.
     'address': {
-        pattern: /\b[0-9A-Fa-f]{4,16}(?=\s{2,})/,
+        pattern: /(^|\n)[0-9A-Fa-f]{4,16}\b/,
+        lookbehind: true,
         alias: 'number'
     },
     'hex': {
