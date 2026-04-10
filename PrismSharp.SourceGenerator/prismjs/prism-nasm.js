@@ -5,6 +5,11 @@
 // The 'instruction' token is intentionally last as a catch-all for any
 // unmatched word — in this format, that's always a mnemonic.
 Prism.languages.nasm = {
+    // Annotations: "; MethodName()" or "; module.dll+0x1234"
+    'comment': {
+        pattern: /;.*/,
+        greedy: true
+    },
     // Address at line start: "000A ", "0032 ".
     // PrismSharp's JS→C# pipeline strips regex flags (toJSON returns .source only),
     // so /m doesn't work. Instead, use lookbehind with (^|\n) to anchor to line start.
