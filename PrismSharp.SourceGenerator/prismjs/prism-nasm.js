@@ -31,7 +31,7 @@ Prism.languages.nasm = {
     },
     'registers': {
         pattern: /\b(ip|eip|rip|eax|ebx|ecx|edx|edi|esi|ebp|esp|ax|bx|cx|dx|di|si|bp|sp|ah|al|bh|bl|ch|cl|dh|dl|cs|ds|ss|es|fs|gs|cr[0-4]|dr[0-7]|tr[67]|st\d?|rax|rbx|rcx|rdx|rsp|rbp|rsi|rdi|r8|r9|r1[0-5]|r8[bwd]|r9[bwd]|r1[0-5][bwd]|[xyz]mm\d{1,2}|[bdhswxq]\d{1,2}|v\d{1,2}|wzr|xzr|wsp|p\d{1,2}|z\d{1,2})\b/,
-        alias: 'function'
+        alias: 'variable'
     },
     // ARM64 immediates: #0x10, #-3, #42
     'immediate': {
