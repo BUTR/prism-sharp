@@ -11,7 +11,7 @@ Prism.languages.nasm = {
     'address': {
         pattern: /(^|\n)[0-9A-Fa-f]{4,16}\b/,
         lookbehind: true,
-        alias: 'number'
+        alias: 'constant'
     },
     'hex': {
         pattern: /\b0x[0-9A-Fa-f]+\b/,
